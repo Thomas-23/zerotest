@@ -2,14 +2,17 @@ __author__ = 'Hari Jiang'
 
 import logging
 import socket
+from zerotest.tunnel import Tunnel
 
 LOG = logging.getLogger()
 
 
 class Forwarder(object):
-    def __init__(self, host, port):
+    def __init__(self, host, port, tunnel_class=Tunnel):
         self.up_stream = (host, port)
         self._tunnels_map = {}
+        assert issubclass(tunnel_class, Tunnel)
+        self._tunnel_class = tunnel_class
 
     def _new_forward_sock(self):
         forward_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -24,7 +27,7 @@ class Forwarder(object):
     def establish_tunnel(self, client_sock, _client_addr):
         forward_sock = self._new_forward_sock()
         if forward_sock:
-            tunnel = Tunnel(forward_sock, client_sock)
+            tunnel = self._tunnel_class(forward_sock, client_sock)
             self._tunnels_map[client_sock] = tunnel
             self._tunnels_map[forward_sock] = tunnel
         return forward_sock
@@ -40,22 +43,4 @@ class Forwarder(object):
         del self._tunnels_map[sock2]
         return sock2
 
-
-class Tunnel(object):
-    def __init__(self, server, client):
-        self.server = server
-        self.client = client
-
-    def send(self, sender_sock, data):
-        receiver_sock = self.get_pair_sock(sender_sock)
-        receiver_sock.send(data)
-
-    def finish(self, closed_sock):
-        pass
-
-    def get_pair_sock(self, sock):
-        if self.server == sock:
-            return self.client
-        elif self.client == sock:
-            return self.server
 

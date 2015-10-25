@@ -41,6 +41,7 @@ class Server():
                     data = r.recv(BUFFER_SIZE)
                     if len(data) == 0:
                         self.on_close(r)
+                        break
                     else:
                         self.on_recv(r, data)
                 else:
@@ -69,8 +70,6 @@ class Server():
         tunnel_sock.close()
 
     def on_recv(self, sock, data):
-        # here we can parse and/or modify the data before send forward
-        print data
         self.forwarder.forward_data(sock, data)
 
     def close(self):
