@@ -11,8 +11,6 @@ LOG = logging.getLogger()
 LOG.setLevel(logging.DEBUG)
 
 
-# Changing the buffer_size and delay, you can improve the speed and bandwidth.
-# But when buffer get to high or delay go too down, you can broke things
 BUFFER_SIZE = 4096
 WAIT_READABLE_SECONDS = 0.0001
 

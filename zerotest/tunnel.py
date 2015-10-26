@@ -24,21 +24,16 @@ class Tunnel(object):
 class TraceHTTPTunnel(Tunnel):
     def __init__(self, *args, **kwargs):
         super(TraceHTTPTunnel, self).__init__(*args, **kwargs)
-        self.request = ""
-        self.response = ""
+        self.request = bytearray()
+        self.response = bytearray()
 
     def send(self, sender_sock, data):
         if sender_sock == self.server:
             self.client.send(data)
             self.response += data
-            # print "------request-------"
-            # print self.request
         elif sender_sock == self.client:
             self.server.send(data)
             self.request += data
-            # if self.response:
-                # print "------response-------"
-                # print self.response
         else:
             raise LookupError("sender_sock not found in this tunnel")
 

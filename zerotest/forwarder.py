@@ -2,7 +2,9 @@ __author__ = 'Hari Jiang'
 
 import logging
 import socket
+
 from zerotest.tunnel import Tunnel
+
 
 LOG = logging.getLogger()
 
@@ -13,6 +15,7 @@ class Forwarder(object):
         self._tunnels_map = {}
         assert issubclass(tunnel_class, Tunnel)
         self._tunnel_class = tunnel_class
+        self._on_tunnel_close_callbacks = []
 
     def _new_forward_sock(self):
         forward_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -38,9 +41,15 @@ class Forwarder(object):
     def pop_tunnel_sock(self, sock):
         tunnel = self._tunnels_map[sock]
         sock2 = tunnel.get_pair_sock(sock)
-        tunnel.finish(sock)
         del self._tunnels_map[sock]
         del self._tunnels_map[sock2]
+        self.on_tunnel_close(tunnel, sock)
         return sock2
 
+    def on_tunnel_close(self, tunnel, sock):
+        tunnel.finish(sock)
+        for callback in self._on_tunnel_close_callbacks:
+            callback(tunnel, sock)
 
+    def set_tunnel_close_callback(self, callback):
+        self._on_tunnel_close_callbacks.append(callback)
