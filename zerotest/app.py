@@ -5,22 +5,18 @@ from zerotest.forwarder import Forwarder
 from zerotest.tunnel import TraceHTTPTunnel
 from zerotest.http_recorder import HTTPRecorder
 
-forwarder = Forwarder('localhost', 5000, tunnel_class=TraceHTTPTunnel)
-server = Server(forwarder)
-recorder = HTTPRecorder("./test.data")
-recorder.start_service()
 
+class App(object):
+    def __init__(self, forward_host, forward_port, record_file_path):
+        forwarder = Forwarder(forward_host, forward_port, tunnel_class=TraceHTTPTunnel)
+        self.server = Server(forwarder)
+        self.recorder = HTTPRecorder(record_file_path)
+        forwarder.set_tunnel_close_callback(lambda t, _: self.recorder.record_tunnel(t))
 
-def handler(tunnel, _):
-    recorder.record_tunnel(tunnel)
+    def start(self, host, port):
+        self.recorder.start_service()
+        self.server.start_serve(host, port)
 
-forwarder.set_tunnel_close_callback(handler)
-
-try:
-    server.start_serve('', 9090)
-except KeyboardInterrupt:
-    print "Ctrl C - Stopping server"
-finally:
-    server.close()
-    recorder.close()
-
+    def close(self):
+        self.server.close()
+        self.recorder.close()

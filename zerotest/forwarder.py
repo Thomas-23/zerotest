@@ -5,7 +5,6 @@ import socket
 
 from zerotest.tunnel import Tunnel
 
-
 LOG = logging.getLogger()
 
 
