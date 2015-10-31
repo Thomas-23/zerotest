@@ -7,8 +7,6 @@ import os
 import logging
 import tempfile
 
-from zerotest.app import App
-
 DESCRIPTION = """
 zerotest command line, manage zerotest server and test generator.
 """
@@ -36,22 +34,27 @@ class CLI(object):
         server_parser.add_argument('-b', '--bind', help="local bind address, default: 127.0.0.1")
         server_parser.add_argument('-p', '--port', help="local port, default: [random port]")
 
+        run_parser = subparsers.add_parser('run', help='run record file test')
+        run_parser.add_argument('file', help="zerotest record file")
+
         self._parser = parser
 
     def run(self, argv=sys.argv[1:]):
         self._init_arg_parser()
         self._parse_result = self._parser.parse_args(argv)
-        getattr(self, self._parse_result.subparser_name)()
+        getattr(self, 'command_{}'.format(self._parse_result.subparser_name))()
 
     def exit_with_error_message(self, message):
         LOG.error(message)
         exit(1)
 
-    def server(self):
+    def command_server(self):
         """
         sub-command start
         :return:
         """
+        from zerotest.app import App
+
         url = self._parse_result.url
         parsed_url = urlparse(url)
         forward_host = parsed_url.hostname
@@ -73,5 +76,20 @@ class CLI(object):
         try:
             app.start(host, port)
         except KeyboardInterrupt:
-            LOG.info("closing app...")
+            LOG.info("closing atpp...")
             app.close()
+
+    def command_run(self):
+        """
+        sub-command run
+        run record file
+        :return:
+        """
+        from zerotest.record.record_test_runner import RecordTestRunner
+
+        filepath = self._parse_result.file
+        if not os.path.exists(filepath):
+            LOG.warning("file '{}' not exists".format(filepath))
+
+        with open(filepath, 'r') as f:
+            RecordTestRunner(f).run()

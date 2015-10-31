@@ -5,6 +5,7 @@ import threading
 import logging
 
 from zerotest.tunnel import Tunnel
+from zerotest.record.formatter import Formatter
 
 LOG = logging.getLogger(__name__)
 
@@ -24,6 +25,7 @@ class HTTPRecorder(object):
         self._closing = False
         self._service_thread = None
         self._queue = Queue()
+        self._formatter = Formatter()
 
     def start_service(self):
         """
@@ -43,13 +45,8 @@ class HTTPRecorder(object):
             if tunnel is None:
                 record_file.close()
                 return
-            request_bytes = len(tunnel.request)
-            response_bytes = len(tunnel.response)
-            record_file.write("{},{},{}".format(request_bytes + response_bytes, request_bytes, response_bytes))
-            record_file.write("\n")
-            record_file.write(tunnel.request)
-            record_file.write(tunnel.response)
-            record_file.write("\n")
+
+            self._formatter.write_record(record_file, tunnel.request, tunnel.response)
 
     def record_tunnel(self, tunnel):
         """

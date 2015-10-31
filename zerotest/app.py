@@ -3,7 +3,7 @@ __author__ = 'Hari Jiang'
 from zerotest.server import Server
 from zerotest.forwarder import Forwarder
 from zerotest.tunnel import TraceHTTPTunnel
-from zerotest.http_recorder import HTTPRecorder
+from zerotest.record.http_recorder import HTTPRecorder
 
 
 class App(object):

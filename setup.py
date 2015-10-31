@@ -9,4 +9,5 @@ setup(name='zerotest',
       author_email='hari.jiang@outlook.com',
       scripts=['scripts/zerotest'],
       packages=['zerotest'],
+      requires=['requests>=2.2.1']
       )
