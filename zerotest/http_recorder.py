@@ -5,8 +5,6 @@ import threading
 import logging
 
 from zerotest.tunnel import Tunnel
-from zerotest.common import HTTP_LINE_BREAK
-
 
 LOG = logging.getLogger(__name__)
 
@@ -34,8 +32,8 @@ class HTTPRecorder(object):
         """
         self._service_thread = threading.Thread(target=self._loop_work)
         self._running = True
+        LOG.info("recorder service start, store http record to '{}'".format(self.filepath))
         self._service_thread.start()
-        LOG.debug("recorder service start")
 
     def _loop_work(self):
         record_file = open(self.filepath, "a+b")
@@ -77,6 +75,8 @@ class HTTPRecorder(object):
             self._service_thread.join()
         else:
             raise RuntimeError("current service is not running")
+
+        LOG.info("closed, record file: '{}'".format(self.filepath))
 
     def shutdown(self):
         """

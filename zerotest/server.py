@@ -6,9 +6,7 @@ import select
 import time
 
 
-logging.basicConfig()
-LOG = logging.getLogger()
-LOG.setLevel(logging.DEBUG)
+LOG = logging.getLogger(__name__)
 
 
 BUFFER_SIZE = 4096
@@ -24,6 +22,7 @@ class Server():
         self.forwarder = forwarder
 
     def start_serve(self, host, port):
+        LOG.info("local proxy server start on {}:{}".format(host, port))
         self.server.bind((host, port))
         self.server.listen(300)
 
@@ -45,22 +44,23 @@ class Server():
                 else:
                     time.sleep(WAIT_READABLE_SECONDS)
             except StandardError as e:
-                print e
+                LOG.error(e)
 
     def on_accept(self):
         client_sock, client_addr = self.server.accept()
+        LOG.debug("accept client %s", client_addr)
         forward_sock = self.forwarder.establish_tunnel(client_sock, client_addr)
         if forward_sock:
-            print client_addr, "has connected"
+            LOG.debug("%s has connected", client_addr)
             self.incoming.append(client_sock)
             self.incoming.append(forward_sock)
         else:
-            print "Can't establish connection with remote server.",
-            print "Closing connection with client side", client_addr
+            LOG.info("Can't establish connection with remote server.")
+            LOG.debug("Closing connection with client side %s", client_addr)
             client_sock.close()
 
     def on_close(self, sock):
-        print sock.getpeername(), "has disconnected"
+        LOG.debug("%s has disconnected", sock.getpeername())
         tunnel_sock = self.forwarder.pop_tunnel_sock(sock)
         self.incoming.remove(sock)
         self.incoming.remove(tunnel_sock)
@@ -72,3 +72,4 @@ class Server():
 
     def close(self):
         self.server.close()
+        LOG.info("server closed")

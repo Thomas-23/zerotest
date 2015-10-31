@@ -15,7 +15,11 @@ class App(object):
 
     def start(self, host, port):
         self.recorder.start_service()
-        self.server.start_serve(host, port)
+        try:
+            self.server.start_serve(host, port)
+        except:
+            self.recorder.close()
+            raise
 
     def close(self):
         self.server.close()

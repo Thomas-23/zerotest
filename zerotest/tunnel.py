@@ -1,5 +1,9 @@
 __author__ = 'Hari Jiang'
 
+import logging
+
+LOG = logging.getLogger(__name__)
+
 
 class Tunnel(object):
     def __init__(self, server, client):
@@ -39,8 +43,10 @@ class TraceHTTPTunnel(Tunnel):
 
     def finish(self, closed_sock):
         super(TraceHTTPTunnel, self).finish(closed_sock)
-        print "finish by client:", closed_sock == self.client
-        print "-----request-------"
-        print self.request
-        print "-----response-------"
-        print self.response
+        LOG.debug("""
+is finish by client: %s
+-----request-------
+%s
+-----response-------
+%s
+""", closed_sock == self.client, self.request, self.response)

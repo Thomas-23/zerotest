@@ -5,7 +5,7 @@ import socket
 
 from zerotest.tunnel import Tunnel
 
-LOG = logging.getLogger()
+LOG = logging.getLogger(__name__)
 
 
 class Forwarder(object):
@@ -26,7 +26,8 @@ class Forwarder(object):
             forward_sock.close()
             LOG.exception(e)
 
-    def establish_tunnel(self, client_sock, _client_addr):
+    def establish_tunnel(self, client_sock, client_addr):
+        LOG.debug("establish tunnel between %s <-> %s", client_addr, self.up_stream)
         forward_sock = self._new_forward_sock()
         if forward_sock:
             tunnel = self._tunnel_class(forward_sock, client_sock)
