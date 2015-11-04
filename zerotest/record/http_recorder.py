@@ -4,7 +4,6 @@ from Queue import Queue, Empty
 import threading
 import logging
 
-from zerotest.tunnel import Tunnel
 from zerotest.record.formatter import Formatter
 
 LOG = logging.getLogger(__name__)
@@ -40,24 +39,22 @@ class HTTPRecorder(object):
     def _loop_work(self):
         record_file = open(self.filepath, "a+b")
         while True:
-            tunnel = self._queue.get()
-            LOG.debug("receive tunnel %s", tunnel)
-            if tunnel is None:
+            task = self._queue.get()
+            LOG.debug("receive task %s", task)
+            if task is None:
                 record_file.close()
                 return
 
-            self._formatter.write_record(record_file, tunnel.request, tunnel.response)
+            self._formatter.write_record(record_file, task[0], task[1])
 
-    def record_tunnel(self, tunnel):
+    def record_http(self, request, response):
         """
-        async method, put tunnel into task queue
-        :param tunnel:
+        async method, put request, response into task queue
         :return:
         """
         if not self._closing:
-            assert isinstance(tunnel, Tunnel)
-            LOG.debug("record tunnel %s", tunnel)
-            self._queue.put(tunnel)
+            LOG.debug("record http %s, %s", request, response)
+            self._queue.put((request, response))
 
     def close(self):
         """

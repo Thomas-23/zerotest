@@ -7,14 +7,12 @@ import os
 import logging
 import tempfile
 
+from zerotest.common import init_logging_config
+
 DESCRIPTION = """
 zerotest command line, manage zerotest server and test generator.
 """
-
-if os.getenv('ZEROTEST_DEBUG'):
-    logging.basicConfig(level=logging.DEBUG)
-else:
-    logging.basicConfig(level=logging.INFO)
+init_logging_config()
 
 LOG = logging.getLogger(__name__)
 
@@ -32,9 +30,9 @@ class CLI(object):
         server_parser.add_argument('url', help="target url: http://example.com")
         server_parser.add_argument('-f', '--file', help="file path to store record, default: [random path]")
         server_parser.add_argument('-b', '--bind', help="local bind address, default: 127.0.0.1")
-        server_parser.add_argument('-p', '--port', help="local port, default: [random port]")
+        server_parser.add_argument('-p', '--port', help="local port, default: [7000]")
 
-        run_parser = subparsers.add_parser('run', help='run record file test')
+        run_parser = subparsers.add_parser('replay', help='replay record file test')
         run_parser.add_argument('file', help="zerotest record file")
 
         self._parser = parser
@@ -55,12 +53,11 @@ class CLI(object):
         """
         from zerotest.app import App
 
-        url = self._parse_result.url
-        parsed_url = urlparse(url)
+        forward_url = self._parse_result.url
+        parsed_url = urlparse(forward_url)
         forward_host = parsed_url.hostname
-        forward_port = parsed_url.port or 80
         if not forward_host:
-            self.exit_with_error_message("invalid url '{}'".format(url))
+            self.exit_with_error_message("invalid url '{}'".format(forward_url))
 
         filepath = self._parse_result.file
 
@@ -70,18 +67,14 @@ class CLI(object):
             if os.path.exists(filepath):
                 LOG.warning("file '{}' is exists, new record will append to the file".format(filepath))
 
-        app = App(forward_host, forward_port, filepath)
+        app = App(forward_url, filepath)
         host = self._parse_result.bind or '127.0.0.1'
-        port = int(self._parse_result.port or 3000)
-        try:
-            app.start(host, port)
-        except KeyboardInterrupt:
-            LOG.info("closing atpp...")
-            app.close()
+        port = int(self._parse_result.port or 7000)
+        app.run(host, port)
 
-    def command_run(self):
+    def command_replay(self):
         """
-        sub-command run
+        sub-command replay
         run record file
         :return:
         """

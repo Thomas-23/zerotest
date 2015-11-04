@@ -1,4 +1,13 @@
 __author__ = 'Hari Jiang'
 
+import os
+import logging
 
-HTTP_LINE_BREAK = "\r\n"
+DEBUG = os.getenv('ZEROTEST_DEBUG', 'false').lower() == 'true'
+
+
+def init_logging_config():
+    if DEBUG:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.INFO)
