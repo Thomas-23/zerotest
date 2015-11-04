@@ -22,9 +22,7 @@ class Forwarder(object):
         environ.pop('CONTENT_LENGTH', None)
         request = werkzeug.wrappers.Request(environ)
 
-        # remove Host from request headers, then set X-Forwarded-Host
         headers = {k: v for k, v in request.headers if k not in ('Host',)}
-        # headers['X-FORWARDED-HOST'] = request.headers['HOST']
         LOG.debug("forward to [%s]%s, headers: -----%s-----", request.method, self._forward_url, headers)
         url = urljoin(self._forward_url, request.path)
         request_model = Request(scheme=request.scheme, method=request.method, headers=headers, data=request.data,
