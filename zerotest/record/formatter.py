@@ -1,8 +1,9 @@
 __author__ = 'Hari Jiang'
 
 import json
-from zerotest.model.request import Request
-from zerotest.model.response import Response
+
+from zerotest.request import Request
+from zerotest.response import Response
 
 
 class Formatter(object):
@@ -13,6 +14,8 @@ class Formatter(object):
 
     def read_record(self, readable):
         line = readable.readline()
+        if not line:
+            return None
         record = json.loads(line)
         request = Request()
         request.__dict__.update(record['request'])

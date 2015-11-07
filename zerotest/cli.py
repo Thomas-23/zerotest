@@ -30,10 +30,16 @@ class CLI(object):
         server_parser.add_argument('url', help="target url: http://example.com")
         server_parser.add_argument('-f', '--file', help="file path to store record, default: [random path]")
         server_parser.add_argument('-b', '--bind', help="local bind address, default: 127.0.0.1")
-        server_parser.add_argument('-p', '--port', help="local port, default: [7000]")
+        server_parser.add_argument('-p', '--port', help="local port, default: 7000")
 
         run_parser = subparsers.add_parser('replay', help='replay record file test')
         run_parser.add_argument('file', help="zerotest record file")
+        run_parser.add_argument('--endpoint', help="replace requests endpoint, https://example.com")
+        run_parser.add_argument('--ignore-headers', help="pass a list of ignored headers in response match", nargs='*')
+        run_parser.add_argument('--verify-ssl', help="enable ssl verify", dest="verify_ssl", action="store_true")
+        run_parser.add_argument('--no-verify-ssl', help="disable ssl verify", dest="verify_ssl",
+                                action="store_false")
+        run_parser.set_defaults(verify_ssl=False)
 
         self._parser = parser
 
@@ -84,5 +90,9 @@ class CLI(object):
         if not os.path.exists(filepath):
             LOG.warning("file '{}' not exists".format(filepath))
 
+        endpoint = self._parse_result.endpoint
+        ignore_headers = self._parse_result.ignore_headers or []
+        verify_ssl = self._parse_result.verify_ssl
+
         with open(filepath, 'r') as f:
-            RecordTestRunner(f).run()
+            RecordTestRunner(f, endpoint=endpoint, ignore_headers=ignore_headers, verify_ssl=verify_ssl).run()
