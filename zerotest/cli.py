@@ -10,7 +10,7 @@ import tempfile
 from zerotest.common import init_logging_config
 
 DESCRIPTION = """
-zerotest command line, manage zerotest server and test generator.
+Capture HTTP request/response and replay it for the test purpose.
 """
 init_logging_config()
 
@@ -96,3 +96,11 @@ class CLI(object):
 
         with open(filepath, 'r') as f:
             RecordTestRunner(f, endpoint=endpoint, ignore_headers=ignore_headers, verify_ssl=verify_ssl).run()
+
+
+def main():
+    CLI().run()
+
+
+if __name__ == '__main__':
+    main()
