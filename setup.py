@@ -7,6 +7,7 @@ setup(name='zerotest',
       description='Capture HTTP request/response and replay it for the test purpose',
       author='Hari Jiang',
       author_email='hari.jiang@outlook.com',
+      license='MIT',
       scripts=['scripts/zerotest'],
       packages=['zerotest'],
       requires=[
