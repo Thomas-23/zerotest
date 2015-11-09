@@ -10,18 +10,11 @@ req = Request(scheme="http", method="get", params="query_string=here", host="exa
 res = Response(status=200, headers={"responsed": "header"}, body="response")
 formatter = Formatter()
 
-dumped = """{"request": {"headers": {"just": "header"}, "host": "example.com", "params": "query_string=here", "path": "/test", "scheme": "http", "data": "request", "method": "get"}, "response": {"status": 200, "headers": {"responsed": "header"}, "body": "response"}}
-"""
 
-
-def test_write():
+def test_formatter():
     writable = StringIO()
     formatter.write_record(writable, req, res)
-    assert writable.getvalue() == dumped
-
-
-def test_read():
-    readable = StringIO(dumped)
+    readable = StringIO(writable.getvalue())
     request, response = formatter.read_record(readable)
     assert req.__dict__ == request.__dict__
     assert res.__dict__ == response.__dict__

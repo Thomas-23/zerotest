@@ -31,12 +31,14 @@ setup(name='zerotest',
           'requests>=2.2.1',
           'Werkzeug>=0.10.4',
       ],
-      tests_require=[
-          'pytest>=2.8.2',
-      ],
       entry_points={
           'console_scripts': [
               'zerotest=zerotest.cli:main',
           ],
       },
+      classifiers=[
+          'Operating System :: OS Independent',
+          'Programming Language :: Python',
+          'Topic :: Software Development :: Libraries :: Python Modules'
+      ],
       )
