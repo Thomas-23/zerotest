@@ -2,6 +2,7 @@
 *.data
 .idea
 .cache
+.tox
 build
 dist
 *.egg-info
