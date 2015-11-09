@@ -1,1 +1,1 @@
-# ZEROTEST [![Build Status](https://travis-ci.org/jjyr/zerotest.svg?branch=master)](https://travis-ci.org/jjyr/zerotest)
+# ZEROTEST [![PyPI](https://img.shields.io/pypi/v/zerotest.svg)]() [![Travis](https://img.shields.io/travis/jjyr/zerotest.svg)]()
