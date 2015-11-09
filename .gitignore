@@ -1,6 +1,7 @@
 *.pyc
 *.data
 .idea
+.cache
 build
 dist
 *.egg-info

@@ -5,7 +5,7 @@ __author__ = 'Hari Jiang'
 import logging
 
 from zerotest.record.formatter import Formatter
-from zerotest.test_case_matcher import TestCaseMatcher, TestCaseError
+from zerotest.response_matcher import ResponseMatcher, MatchError
 
 LOG = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ class RecordTestRunner(object):
         self._endpoint = endpoint
         self._verify_ssl = verify_ssl
         self._formatter = Formatter()
-        self._test_case_matcher = TestCaseMatcher(ignore_headers=ignore_headers)
+        self._response_matcher = ResponseMatcher(ignore_headers=ignore_headers)
 
     def run(self):
         i = 0
@@ -36,8 +36,8 @@ class RecordTestRunner(object):
                     request.endpoint = self._endpoint
                 real_response = response.from_requests_response(request.send_request(self._verify_ssl))
                 try:
-                    self._test_case_matcher.match_requests(response, real_response)
-                except TestCaseError as e:
+                    self._response_matcher.match_responses(response, real_response)
+                except MatchError as e:
                     LOG.error("Test case {} failed: {}".format(i, e))
                     print("---------request---------")
                     print(request)

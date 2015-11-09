@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from setuptools import setup
+from setuptools import find_packages, setup
 
 setup(name='zerotest',
       version='0.0.0',
@@ -8,7 +8,7 @@ setup(name='zerotest',
       author='Hari Jiang',
       author_email='hari.jiang@outlook.com',
       license='MIT',
-      packages=['zerotest'],
+      packages=find_packages(),
       install_requires=[
           'requests>=2.2.1',
           'Werkzeug>=0.10.4',
