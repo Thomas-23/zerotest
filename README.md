@@ -1,4 +1,4 @@
-# ZEROTEST [![PyPI](https://img.shields.io/pypi/v/zerotest.svg)]() [![Travis](https://img.shields.io/travis/jjyr/zerotest.svg)]()
+# ZEROTEST [![PyPI](https://img.shields.io/pypi/v/zerotest.svg)](https://pypi.python.org/pypi/zerotest) [![Travis](https://img.shields.io/travis/jjyr/zerotest.svg)](https://travis-ci.org/jjyr/zerotest)
 
 ## Install
 `pip install zerotest`
