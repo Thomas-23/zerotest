@@ -20,10 +20,11 @@ class PyTest(test):
 
 
 setup(name='zerotest',
-      version='0.0.0',
+      version='0.0.1',
       description='Capture HTTP request/response and replay it for the test purpose',
       author='Hari Jiang',
       author_email='hari.jiang@outlook.com',
+      url='https://github.com/jjyr/zerotest',
       license='MIT',
       cmdclass={'test': PyTest},
       packages=find_packages(),
@@ -38,7 +39,6 @@ setup(name='zerotest',
       },
       classifiers=[
           'Operating System :: OS Independent',
-          'Programming Language :: Python',
-          'Topic :: Software Development :: Libraries :: Python Modules'
+          'Programming Language :: Python :: 2.7',
       ],
       )
