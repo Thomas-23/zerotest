@@ -14,10 +14,10 @@ class ResponseMatcher(object):
         return r1.status == r2.status
 
     def _compare_headers(self, expect, real):
-        expect_headers = set({k.upper(): expect.headers[k] for k in expect.headers if
-                              k.upper() not in self._ignore_headers}.items())
-        real_headers = set({k.upper(): real.headers[k] for k in real.headers if
-                            k.upper() not in self._ignore_headers}.items())
+        expect_headers = {k.upper(): expect.headers[k] for k in expect.headers if
+                          k.upper() not in self._ignore_headers}
+        real_headers = {k.upper(): real.headers[k] for k in real.headers if
+                        k.upper() not in self._ignore_headers}
         return expect_headers == real_headers
 
     def _compare_body(self, r1, r2):

@@ -94,8 +94,12 @@ class CLI(object):
         ignore_headers = self._parse_result.ignore_headers or []
         verify_ssl = self._parse_result.verify_ssl
 
-        with open(filepath, 'r') as f:
-            RecordTestRunner(f, endpoint=endpoint, ignore_headers=ignore_headers, verify_ssl=verify_ssl).run()
+        _, failed = RecordTestRunner(filepath, endpoint=endpoint, ignore_headers=ignore_headers,
+                                     verify_ssl=verify_ssl).run()
+
+        # exit with code 1 if any case failed
+        if failed > 0:
+            exit(1)
 
 
 def main():
