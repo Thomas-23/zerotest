@@ -1,12 +1,12 @@
 from __future__ import print_function
 
-__author__ = 'Hari Jiang'
-
 import logging
 
 from zerotest.record.formatter import Formatter
 from zerotest.response_matcher import ResponseMatcher, MatchError
 from zerotest.utils import print_line_notify
+
+__author__ = 'Hari Jiang'
 
 LOG = logging.getLogger(__name__)
 

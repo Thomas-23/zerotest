@@ -1,5 +1,3 @@
-__author__ = 'Hari Jiang'
-
 import argparse
 import logging
 import os
@@ -8,6 +6,8 @@ import tempfile
 from urlparse import urlparse
 
 from zerotest.common import init_logging_config
+
+__author__ = 'Hari Jiang'
 
 DESCRIPTION = """
 Capture HTTP request/response and replay it for the test purpose.
@@ -32,14 +32,18 @@ class CLI(object):
         server_parser.add_argument('-b', '--bind', help="local bind address, default: 127.0.0.1")
         server_parser.add_argument('-p', '--port', help="local port, default: 7000")
 
-        run_parser = subparsers.add_parser('replay', help='replay record file test')
-        run_parser.add_argument('file', help="zerotest record file")
-        run_parser.add_argument('--endpoint', help="replace requests endpoint, https://example.com")
-        run_parser.add_argument('--ignore-headers', help="pass a list of ignored headers in response match", nargs='*')
-        run_parser.add_argument('--verify-ssl', help="enable ssl verify", dest="verify_ssl", action="store_true")
-        run_parser.add_argument('--no-verify-ssl', help="disable ssl verify", dest="verify_ssl",
-                                action="store_false")
-        run_parser.set_defaults(verify_ssl=False)
+        replay_parser = subparsers.add_parser('replay', help='replay from record data')
+        replay_parser.add_argument('file', help="path of record data file")
+        replay_parser.add_argument('--endpoint', help="replace requests endpoint, https://example.com")
+        replay_parser.add_argument('--ignore-headers', help="pass a list of ignored headers in response match",
+                                   nargs='*')
+        replay_parser.add_argument('--verify-ssl', help="enable ssl verify", dest="verify_ssl", action="store_true")
+        replay_parser.add_argument('--no-verify-ssl', help="disable ssl verify", dest="verify_ssl",
+                                   action="store_false")
+        replay_parser.set_defaults(verify_ssl=False)
+
+        generate_parser = subparsers.add_parser('generate', help='generate test code from record data')
+        generate_parser.add_argument('file', help="path of record data file")
 
         self._parser = parser
 
@@ -97,6 +101,16 @@ class CLI(object):
         # exit with code 1 if any case failed
         if failed > 0:
             return 1
+
+    def command_generate(self):
+        """
+        sub-command generate
+        :return:
+        """
+        from zerotest.generator.generator import Generator
+        filepath = self._parse_result.file
+        generator = Generator(filepath)
+        print(generator.generate())
 
 
 def main():

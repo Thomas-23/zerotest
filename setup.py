@@ -31,6 +31,7 @@ setup(name='zerotest',
       install_requires=[
           'requests>=2.2.1',
           'Werkzeug>=0.10.4',
+          'jinja2>=2.8',
       ],
       entry_points={
           'console_scripts': [

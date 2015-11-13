@@ -1,12 +1,12 @@
-__author__ = 'Hari Jiang'
-
-import tempfile
 import os
+import tempfile
 
+from zerotest.record.formatter import Formatter
 from zerotest.record.http_recorder import HTTPRecorder
 from zerotest.request import Request
 from zerotest.response import Response
-from zerotest.record.formatter import Formatter
+
+__author__ = 'Hari Jiang'
 
 req = Request(scheme="http", method="get", params="query_string=here", host="example.com", path="/test",
               headers={"just": "header"}, data="request")
