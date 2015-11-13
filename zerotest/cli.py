@@ -1,11 +1,11 @@
 __author__ = 'Hari Jiang'
 
 import argparse
-import sys
-from urlparse import urlparse
-import os
 import logging
+import os
+import sys
 import tempfile
+from urlparse import urlparse
 
 from zerotest.common import init_logging_config
 
@@ -46,11 +46,7 @@ class CLI(object):
     def run(self, argv=sys.argv[1:]):
         self._init_arg_parser()
         self._parse_result = self._parser.parse_args(argv)
-        getattr(self, 'command_{}'.format(self._parse_result.subparser_name))()
-
-    def exit_with_error_message(self, message):
-        LOG.error(message)
-        exit(1)
+        return getattr(self, 'command_{}'.format(self._parse_result.subparser_name))()
 
     def command_server(self):
         """
@@ -63,7 +59,8 @@ class CLI(object):
         parsed_url = urlparse(forward_url)
         forward_host = parsed_url.hostname
         if not forward_host:
-            self.exit_with_error_message("invalid url '{}'".format(forward_url))
+            LOG.error("invalid url '{}'".format(forward_url))
+            return 1
 
         filepath = self._parse_result.file
 
@@ -99,11 +96,12 @@ class CLI(object):
 
         # exit with code 1 if any case failed
         if failed > 0:
-            exit(1)
+            return 1
 
 
 def main():
-    CLI().run()
+    code = CLI().run() or 0
+    exit(code)
 
 
 if __name__ == '__main__':
