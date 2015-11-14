@@ -3,6 +3,7 @@
 .idea
 .cache
 .tox
+tmp
 build
 dist
 *.egg-info

@@ -1,6 +1,6 @@
-__author__ = 'Hari Jiang'
-
 from zerotest.forwarder import Forwarder
+
+__author__ = 'Hari Jiang'
 
 request = None
 response = None

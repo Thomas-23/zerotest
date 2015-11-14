@@ -2,10 +2,10 @@ __author__ = 'Hari Jiang'
 
 
 def get_name_from_request(request):
-    return '{}_{}'.format(request.method.lower(), path_to_func_name(request.path))
+    return '{}_{}'.format(request.method.lower(), _path_to_func_name(request.path))
 
 
-def path_to_func_name(path):
+def _path_to_func_name(path):
     if path == '/':
         name = 'root'
     else:
