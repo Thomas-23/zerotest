@@ -1,3 +1,5 @@
+from zerotest.utils.generator_helper import dict_to_param_style_code
+
 __author__ = 'Hari Jiang'
 
 
@@ -16,3 +18,6 @@ class Response(object):
         return """{status}
 {headers}
 {body}""".format(**self.__dict__)
+
+    def __repr__(self):
+        return '{}({})'.format(Response.__name__, dict_to_param_style_code(self.__dict__))

@@ -4,7 +4,7 @@ import logging
 
 from zerotest.record.formatter import Formatter
 from zerotest.response_matcher import ResponseMatcher, MatchError
-from zerotest.utils import print_line_notify
+from zerotest.utils.print_helper import print_line_notify
 
 __author__ = 'Hari Jiang'
 
@@ -45,13 +45,14 @@ class RecordTestRunner(object):
                     real_response = response.from_requests_response(request.send_request(self._verify_ssl))
                     try:
                         self._response_matcher.match_responses(response, real_response)
-                    except MatchError as e:
+                    except MatchError:
                         failed += 1
                         print_line_notify("Test case {} failed".format(i))
-                        print("error: {}".format(e))
                         print("request:")
                         print(request)
                         print("response:")
+                        print(real_response)
+                        print("expect response:")
                         print(response)
                     else:
                         print(".", end='')

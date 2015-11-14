@@ -1,7 +1,10 @@
-__author__ = 'Hari Jiang'
 from urlparse import urlparse
 
 import requests
+
+from zerotest.utils.generator_helper import dict_to_param_style_code
+
+__author__ = 'Hari Jiang'
 
 
 class Request(object):
@@ -41,3 +44,6 @@ class Request(object):
         return """[{method}]{url}
 {headers}
 {data}""".format(method=self.method, url=self.url, headers=self.headers, data=self.data)
+
+    def __repr__(self):
+        return '{}({})'.format(Request.__name__, dict_to_param_style_code(self.__dict__))
