@@ -20,7 +20,7 @@ class PyTest(test):
 
 
 setup(name='zerotest',
-      version='0.0.1',
+      version='0.0.2',
       description='Capture HTTP request/response and replay it for the test purpose',
       author='Hari Jiang',
       author_email='hari.jiang@outlook.com',
