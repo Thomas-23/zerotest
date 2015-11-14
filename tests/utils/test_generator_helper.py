@@ -14,4 +14,7 @@ def test_get_name_from_request():
 
 
 def test_dict_to_param_style_code():
-    assert dict_to_param_style_code(OrderedDict(param_a='A', test_c='C')) == "param_a='A', test_c='C'"
+    test_dict = OrderedDict()
+    test_dict['param_a'] = 'A'
+    test_dict['test_c'] = 'C'
+    assert dict_to_param_style_code(test_dict) == "param_a='A', test_c='C'"
