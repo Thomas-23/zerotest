@@ -40,6 +40,12 @@ class Request(object):
                                 params=self.params, data=self.data,
                                 stream=True, allow_redirects=False, verify=verify)
 
+    def __eq__(self, other):
+        if type(other) != Request:
+            return False
+
+        return self.__dict__ == other.__dict__
+
     def __str__(self):
         return """[{method}]{url}
 {headers}

@@ -54,9 +54,34 @@ class CLI(object):
         self._parser = parser
 
     def run(self, argv=sys.argv[1:]):
+        """
+        run cli
+        :param argv:
+        :return: cli exit code
+        """
         self._init_arg_parser()
         self._parse_result = self._parser.parse_args(argv)
+        if not self.verify_parse_result():
+            return 1
         return getattr(self, 'command_{}'.format(self._parse_result.subparser_name))()
+
+    def verify_parse_result(self):
+        cli_options = self.get_cli_options('endpoint', 'url')
+        endpoint = cli_options.get('endpoint')
+        if endpoint:
+            parsed_url = urlparse(endpoint)
+            if not parsed_url.hostname or not parsed_url.scheme:
+                LOG.error("invalid endpoint '{}'".format(endpoint))
+                return False
+
+        url = cli_options.get('url')
+        if url:
+            parsed_url = urlparse(url)
+            if not parsed_url.hostname:
+                LOG.error("invalid url '{}'".format(url))
+                return False
+
+        return True
 
     def get_cli_options(self, *keys):
         options = {k: getattr(self._parse_result, k) for k in keys if
@@ -71,12 +96,6 @@ class CLI(object):
         from zerotest.app import App
 
         forward_url = self._parse_result.url
-        parsed_url = urlparse(forward_url)
-        forward_host = parsed_url.hostname
-        if not forward_host:
-            LOG.error("invalid url '{}'".format(forward_url))
-            return 1
-
         filepath = self._parse_result.file
 
         if not filepath:

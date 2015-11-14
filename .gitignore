@@ -2,6 +2,7 @@
 *.data
 .idea
 .cache
+test.py
 .tox
 tmp
 build

@@ -17,30 +17,68 @@ def test_renderer():
                     Response(status=200, headers=dict(content_type="text"), body='ok')))
     renderer = Renderer(options=options, match_options=match_options)
 
-    assert renderer.render(records) == _RESULT
+    cases = [
+        dict(request=Request(scheme='http', method='GET', host='for_test.org', path='/',
+                             headers=dict(header_1='1'), data='just_for_test')
+             , response=Response(status=200, headers=dict(content_type="text"), body='ok')
+             , func_name='get_root'),
+        dict(request=Request(scheme='https', method='POST', host='for_test.org', path='/second_request',
+                             headers=dict(header_a='a'), data='second_request')
+             , response=Response(status=200, headers=dict(content_type="text"), body='ok')
+             , func_name='post_second_request'),
+    ]
+
+    assert renderer.prepare(records) == cases
 
 
-_RESULT = """
-from zerotest.request import Request
-from zerotest.response import Response
-from zerotest.response_matcher import ResponseMatcher
+def test_renderer_with_options():
+    options = dict(endpoint='http://test.com')
+    match_options = dict()
+    records = list()
+    records.append((Request(scheme='http', method='GET', host='for_test.org', path='/',
+                            headers=dict(header_1='1'), data='just_for_test'),
+                    Response(status=200, headers=dict(content_type="text"), body='ok')))
+    records.append((Request(scheme='https', method='POST', host='for_test.org', path='/second_request',
+                            headers=dict(header_a='a'), data='second_request'),
+                    Response(status=200, headers=dict(content_type="text"), body='ok')))
+    renderer = Renderer(options=options, match_options=match_options)
+
+    cases = [
+        dict(request=Request(scheme='http', method='GET', host='test.com', path='/',
+                             headers=dict(header_1='1'), data='just_for_test')
+             , response=Response(status=200, headers=dict(content_type="text"), body='ok')
+             , func_name='get_root'),
+        dict(request=Request(scheme='http', method='POST', host='test.com', path='/second_request',
+                             headers=dict(header_a='a'), data='second_request')
+             , response=Response(status=200, headers=dict(content_type="text"), body='ok')
+             , func_name='post_second_request'),
+    ]
+
+    assert renderer.prepare(records) == cases
 
 
-matcher = ResponseMatcher()
-verify_ssl = False
+def test_renderer_with_match_options():
+    options = dict()
+    match_options = dict(ignore_headers=('date', 'auth'))
+    records = list()
+    records.append((Request(scheme='http', method='GET', host='for_test.org', path='/',
+                            headers=dict(header_1='1'), data='just_for_test'),
+                    Response(status=200, headers=dict(content_type="text", date='yesterday', auth='secret'),
+                             body='ok')))
+    records.append((Request(scheme='https', method='POST', host='for_test.org', path='/second_request',
+                            headers=dict(header_a='a'), data='second_request'),
+                    Response(status=200, headers=dict(content_type="text", date='today'), body='ok')))
+    renderer = Renderer(options=options, match_options=match_options)
 
+    cases = [
+        dict(request=Request(scheme='http', method='GET', host='for_test.org', path='/',
+                             headers=dict(header_1='1'), data='just_for_test')
+             , response=Response(status=200, headers=dict(content_type="text"), body='ok')
+             , func_name='get_root'),
+        dict(request=Request(scheme='https', method='POST', host='for_test.org', path='/second_request',
+                             headers=dict(header_a='a'), data='second_request')
+             , response=Response(status=200, headers=dict(content_type="text"), body='ok')
+             , func_name='post_second_request'),
+    ]
 
-def test_get_root():
-    request = Request(headers={'header_1': '1'}, host='for_test.org', path='/', scheme='http', data='just_for_test', method='GET')
-    real = Response.from_requests_response(request.send_request(verify=verify_ssl))
-    expect = Response(status=200, headers={'content_type': 'text'}, body='ok')
-    matcher.match_responses(real, expect)
-
-
-def test_post_second_request():
-    request = Request(headers={'header_a': 'a'}, host='for_test.org', path='/second_request', scheme='https', data='second_request', method='POST')
-    real = Response.from_requests_response(request.send_request(verify=verify_ssl))
-    expect = Response(status=200, headers={'content_type': 'text'}, body='ok')
-    matcher.match_responses(real, expect)
-
-"""
+    assert renderer.prepare(records) == cases
