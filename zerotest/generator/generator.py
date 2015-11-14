@@ -18,7 +18,7 @@ class Generator(object):
         if options:
             default_options.update(options)
 
-        self._options = options
+        self._options = options or dict()
         self._formatter = Formatter()
         self._match_options = match_options or dict()
 
