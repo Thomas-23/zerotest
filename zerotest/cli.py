@@ -44,6 +44,12 @@ class CLI(object):
 
         generate_parser = subparsers.add_parser('generate', help='generate test code from record data')
         generate_parser.add_argument('file', help="path of record data file")
+        generate_parser.add_argument('--endpoint', help="replace requests endpoint, https://example.com")
+        generate_parser.add_argument('--ignore-headers', help="pass a list of ignored headers",
+                                     nargs='*')
+        generate_parser.add_argument('--verify-ssl', help="enable ssl verify", dest="verify_ssl", action="store_true")
+        generate_parser.add_argument('--no-verify-ssl', help="disable ssl verify", dest="verify_ssl",
+                                     action="store_false")
 
         self._parser = parser
 
@@ -51,6 +57,11 @@ class CLI(object):
         self._init_arg_parser()
         self._parse_result = self._parser.parse_args(argv)
         return getattr(self, 'command_{}'.format(self._parse_result.subparser_name))()
+
+    def get_cli_options(self, *keys):
+        options = {k: getattr(self._parse_result, k) for k in keys if
+                   getattr(self._parse_result, k, None)}
+        return options
 
     def command_server(self):
         """
@@ -109,7 +120,9 @@ class CLI(object):
         """
         from zerotest.generator.generator import Generator
         filepath = self._parse_result.file
-        generator = Generator(filepath)
+        options = self.get_cli_options('endpoint', 'verify_ssl')
+        match_options = self.get_cli_options('ignore_headers')
+        generator = Generator(filepath, options=options, match_options=match_options)
         print(generator.generate())
 
 

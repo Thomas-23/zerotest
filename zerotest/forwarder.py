@@ -7,7 +7,7 @@ import werkzeug.wrappers
 
 from zerotest.request import Request
 from zerotest.response import Response
-from zerotest.utils.wsgi_helper import response_with_response
+from zerotest.utils.http_helper import response_with_response
 
 LOG = logging.getLogger(__name__)
 

@@ -20,7 +20,7 @@ class Renderer(object):
         cases = []
         func_names = defaultdict(int)
         endpoint = self.options.get('endpoint', None)
-        ignore_headers = self.match_options.pop('ignore_headers', None)
+        ignore_headers = self.match_options.get('ignore_headers', None)
         if ignore_headers:
             ignore_headers = set(map(lambda h: h.upper(), ignore_headers))
 
@@ -35,9 +35,8 @@ class Renderer(object):
                 req.endpoint = endpoint
 
             if ignore_headers:
-                for h in ignore_headers:
-                    req.headers.pop(h, None)
-                    res.headers.pop(h, None)
+                res.headers = {k: v for k, v in res.headers.items() if
+                               k.upper() not in ignore_headers}
 
             case_info = dict(request=req, response=res, func_name=func_name)
             cases.append(case_info)
@@ -46,7 +45,7 @@ class Renderer(object):
     def render(self, records):
         cases = self.prepare(records)
         t = Template(_TEMPLATE)
-        result = t.render(match_params=dict_to_param_style_code(self.match_options), cases=cases)
+        result = t.render(options=self.options, match_params=dict_to_param_style_code(self.match_options), cases=cases)
         return result
 
 
@@ -57,11 +56,12 @@ from zerotest.response_matcher import ResponseMatcher
 
 
 matcher = ResponseMatcher({{ match_params }})
+verify_ssl = {{ options.verify_ssl or False }}
 
 {% for c in cases %}
 def test_{{ c.func_name }}():
     request = {{ c.request.__repr__() }}
-    real = Response.from_requests_response(request.send_request())
+    real = Response.from_requests_response(request.send_request(verify=verify_ssl))
     expect = {{ c.response.__repr__() }}
     matcher.match_responses(real, expect)
 

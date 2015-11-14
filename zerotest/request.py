@@ -46,4 +46,5 @@ class Request(object):
 {data}""".format(method=self.method, url=self.url, headers=self.headers, data=self.data)
 
     def __repr__(self):
-        return '{}({})'.format(Request.__name__, dict_to_param_style_code(self.__dict__))
+        return '{}({})'.format(Request.__name__,
+                               dict_to_param_style_code({k: v for k, v in self.__dict__.items() if v}))
