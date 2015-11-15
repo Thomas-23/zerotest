@@ -46,6 +46,14 @@ def test_ignore_headers_compare():
     assert raised_error(f, MatchError)
 
 
+def test_ignore_all_headers_compare():
+    matcher = ResponseMatcher(ignore_all_headers=True)
+    r1 = Response(status=200, headers={"a": "1", "c": "not"}, body="ok")
+    r2 = Response(status=200, headers={"a": "1", "c": "same", "d": 3}, body="ok")
+    f = lambda: matcher.match_responses(r1, r2)
+    assert not raised_error(f, MatchError)
+
+
 def test_ignore_fields_compare():
     import json
     matcher = ResponseMatcher(ignore_fields=['some_record.created_at', 'id'])

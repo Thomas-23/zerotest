@@ -20,8 +20,9 @@ class Renderer(object):
         cases = []
         func_names = defaultdict(int)
         endpoint = self.options.get('endpoint', None)
+        ignore_all_headers = self.match_options.get('ignore_all_headers', None)
         ignore_headers = self.match_options.get('ignore_headers', None)
-        if ignore_headers:
+        if not ignore_all_headers and ignore_headers:
             ignore_headers = set(map(lambda h: h.upper(), ignore_headers))
 
         for (req, res) in records:
@@ -34,7 +35,13 @@ class Renderer(object):
             if endpoint:
                 req.endpoint = endpoint
 
-            if ignore_headers:
+            if ignore_all_headers:
+                content_type = res.get_header('content-type')
+                if content_type:
+                    res.headers = {'content-type': content_type}
+                else:
+                    res.headers = {}
+            elif ignore_headers:
                 res.headers = {k: v for k, v in res.headers.items() if
                                k.upper() not in ignore_headers}
 

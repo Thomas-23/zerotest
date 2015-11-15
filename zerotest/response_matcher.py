@@ -10,7 +10,7 @@ _SERIALIZABLE_CONTENT_TYPE = {'application/json': 'json'}
 
 
 class ResponseMatcher(object):
-    def __init__(self, ignore_headers=None, ignore_fields=None):
+    def __init__(self, ignore_headers=None, ignore_all_headers=False, ignore_fields=None):
         """
         :param ignore_headers: ignored headers when match response
         :param ignore_fields: ignored body fields, only work when response content-type is serializable type
@@ -18,6 +18,7 @@ class ResponseMatcher(object):
         """
         ignore_headers = ignore_headers or []
         self._ignore_headers = set(map(lambda h: h.upper(), ignore_headers))
+        self._ignore_all_headers = ignore_all_headers
         self._ignore_fields = ignore_fields
 
     def _compare_status(self, r1, r2):
@@ -28,9 +29,10 @@ class ResponseMatcher(object):
                 k.upper() not in self._ignore_headers}
 
     def _compare_headers(self, expect, real):
-        expect_headers = self.__remove_ignore_headers(expect.headers)
-        real_headers = self.__remove_ignore_headers(real.headers)
-        assert expect_headers == real_headers
+        if not self._ignore_all_headers:
+            expect_headers = self.__remove_ignore_headers(expect.headers)
+            real_headers = self.__remove_ignore_headers(real.headers)
+            assert expect_headers == real_headers
 
     def __delete_ignore_fields(self, content):
         from zerotest.utils.data_helper import delete_path_from_dict

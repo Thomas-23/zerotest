@@ -47,6 +47,8 @@ class CLI(object):
         parser.add_argument('--endpoint', help="replace requests endpoint, https://example.com")
         parser.add_argument('--ignore-headers', help="list of headers ignore in response matching",
                             nargs='*')
+        parser.add_argument('--ignore-all-headers', help="skip headers match", dest="ignore_all_headers",
+                            action='store_true'),
         parser.add_argument('--ignore-fields',
                             help="list of fields ignore in response matching,"
                                  " only work on serializable content-type,"
@@ -56,6 +58,7 @@ class CLI(object):
         parser.add_argument('--no-verify-ssl', help="disable ssl verify", dest="verify_ssl",
                             action="store_false")
         parser.set_defaults(verify_ssl=False)
+        parser.set_defaults(ignore_all_headers=False)
 
     def run(self, argv=sys.argv[1:]):
         """
@@ -133,7 +136,7 @@ class CLI(object):
         from zerotest.generator.generator import Generator
         filepath = self._parse_result.file
         options = self.get_cli_options('endpoint', 'verify_ssl')
-        match_options = self.get_cli_options('ignore_headers', 'ignore_fields')
+        match_options = self.get_cli_options('ignore_headers', 'ignore_fields', 'ignore_all_headers')
         generator = Generator(filepath, options=options, match_options=match_options)
         return generator
 
