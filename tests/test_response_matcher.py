@@ -32,8 +32,8 @@ def test_compare():
     assert not raised_error(f, MatchError)
 
 
-def test_ignore_header_compare():
-    matcher = ResponseMatcher(['c', 'd', 'e'])
+def test_ignore_headers_compare():
+    matcher = ResponseMatcher(ignore_headers=['c', 'd', 'e'])
     r1 = Response(status=200, headers={"a": "1", "c": "not"}, body="ok")
     r2 = Response(status=200, headers={"a": "1", "c": "same"}, body="ok")
     f = lambda: matcher.match_responses(r1, r2)
@@ -44,3 +44,39 @@ def test_ignore_header_compare():
     assert not raised_error(f, MatchError)
     r1.headers['g'] = "not ignored"
     assert raised_error(f, MatchError)
+
+
+def test_ignore_fields_compare():
+    import json
+    matcher = ResponseMatcher(ignore_fields=['some_record.created_at', 'id'])
+    f = lambda: matcher.match_responses(r1, r2)
+    r1 = Response(status=200, headers={}, body=json.dumps({"id": 1, "name": "test"}))
+    r2 = Response(status=200, headers={}, body=json.dumps({"id": 2, "name": "test"}))
+    # not work if not content-type
+    assert raised_error(f, MatchError)
+    r1.headers['content-type'] = 'application/json'
+    r2.headers['CONTENT-TYPE'] = 'application/json'
+    assert not raised_error(f, MatchError)
+
+    r1.body = json.dumps({"some_record.created_at": 'now', 'record': {'created_at': '111'}})
+    r2.body = json.dumps({"record": {'created_at': '111'}})
+    assert not raised_error(f, MatchError)
+    r1.body = json.dumps({"some_record.created_at": 'now', 'some_record': {'created_at': '111'}})
+    r2.body = json.dumps({"some_record": {'created_at': '111'}})
+    assert raised_error(f, MatchError)
+
+    r1.body = json.dumps({"some_record.created_at": 'now'})
+    r2.body = json.dumps({"some_record": {'created_at': '112'}})
+    assert raised_error(f, MatchError)
+
+    # test key path under list
+    r1.body = json.dumps({"some_record": [{'created_at': '1123', 'id': '0'}]})
+    r2.body = json.dumps({"some_record": [{'created_at': '112', 'id': '1'}]})
+    assert raised_error(f, MatchError)
+    r1.body = json.dumps({"some_record": [{'created_at': '1123', 'id': '0'}, {'created_at': '3322'}]})
+    r2.body = json.dumps({"some_record": [{'created_at': '112', 'id': '1'}, {'created_at': 'tomorrow'}]})
+    assert raised_error(f, MatchError)
+
+    r1.body = json.dumps({"some_record": [{'created_at': '1123', 'id': '1'}, {'created_at': '3322'}]})
+    r2.body = json.dumps({"some_record": [{'created_at': '112', 'id': '1'}, {'created_at': 'tomorrow'}]})
+    assert not raised_error(f, MatchError)

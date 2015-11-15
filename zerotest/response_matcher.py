@@ -52,8 +52,8 @@ class ResponseMatcher(object):
         return content
 
     def _compare_body(self, r1, r2):
-        r1_content_type = r1.headers.get('Content-Type')
-        r2_content_type = r2.headers.get('Content-Type')
+        r1_content_type = r1.get_header('Content-Type')
+        r2_content_type = r2.get_header('Content-Type')
         assert r1_content_type == r2_content_type
         r1_content = r1.body
         r2_content = r2.body
