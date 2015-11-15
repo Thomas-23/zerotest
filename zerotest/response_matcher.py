@@ -32,9 +32,13 @@ class ResponseMatcher(object):
         real_headers = self.__remove_ignore_headers(real.headers)
         assert expect_headers == real_headers
 
-    def __remove_ignore_fields(self, content):
-        return {k: content[k] for k in content if
-                k not in self._ignore_fields}
+    def __delete_ignore_fields(self, content):
+        from zerotest.utils.data_helper import delete_path_from_dict
+        for field_path in self._ignore_fields:
+            if field_path in content:
+                content.pop(field_path, None)
+            else:
+                delete_path_from_dict(content, field_path)
 
     def _handle_content_type_json(self, content):
         import json
@@ -44,11 +48,12 @@ class ResponseMatcher(object):
             LOG.error("detected json response, but raise a error in decoding")
             raise
 
-        return self.__remove_ignore_fields(content)
+        self.__delete_ignore_fields(content)
+        return content
 
     def _compare_body(self, r1, r2):
-        r1_content_type = r1.headers.get('CONTENT-TYPE')
-        r2_content_type = r2.headers.get('CONTENT-TYPE')
+        r1_content_type = r1.headers.get('Content-Type')
+        r2_content_type = r2.headers.get('Content-Type')
         assert r1_content_type == r2_content_type
         r1_content = r1.body
         r2_content = r2.body

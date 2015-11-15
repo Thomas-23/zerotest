@@ -27,7 +27,7 @@ class CLI(object):
         subparsers = parser.add_subparsers(help='sub-command help', dest='subparser_name')
 
         server_parser = subparsers.add_parser('server', help='start zerotest local proxy server')
-        server_parser.add_argument('url', help="target url: http://example.com")
+        server_parser.add_argument('url', help="target url, example: http://example.com")
         server_parser.add_argument('-f', '--file', help="file path to save record data, default: [random path]")
         server_parser.add_argument('-b', '--bind', help="local bind address, default: 127.0.0.1")
         server_parser.add_argument('-p', '--port', help="local port, default: 7000")
@@ -37,7 +37,7 @@ class CLI(object):
 
         replay_parser = subparsers.add_parser('replay', help='replay test from record data')
         self._add_match_options_to_parser(replay_parser)
-        replay_parser.add_argument('-t', '--pytest', help="pass options to pytest, like -t='-vv'", nargs='*')
+        replay_parser.add_argument('-t', '--pytest', help="pass options to pytest, example: -t='-vv'", nargs='*')
 
         self._parser = parser
 
@@ -48,7 +48,9 @@ class CLI(object):
         parser.add_argument('--ignore-headers', help="list of headers ignore in response matching",
                             nargs='*')
         parser.add_argument('--ignore-fields',
-                            help="list of fields ignore in response matching, only work on serializable content-type",
+                            help="list of fields ignore in response matching,"
+                                 " only work on serializable content-type,"
+                                 " example: --ignore-fields a b c.d(explained as d under c)",
                             nargs='*')
         parser.add_argument('--verify-ssl', help="enable ssl verify", dest="verify_ssl", action="store_true")
         parser.add_argument('--no-verify-ssl', help="disable ssl verify", dest="verify_ssl",
@@ -131,7 +133,7 @@ class CLI(object):
         from zerotest.generator.generator import Generator
         filepath = self._parse_result.file
         options = self.get_cli_options('endpoint', 'verify_ssl')
-        match_options = self.get_cli_options('ignore_headers')
+        match_options = self.get_cli_options('ignore_headers', 'ignore_fields')
         generator = Generator(filepath, options=options, match_options=match_options)
         return generator
 

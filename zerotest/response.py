@@ -18,6 +18,11 @@ class Response(object):
         res.__dict__ = json.loads(json.dumps(res.__dict__))
         return res
 
+    def get_header(self, header):
+        for k, v in self.headers.items():
+            if k.upper() == header.upper():
+                return v
+
     def __eq__(self, other):
         if type(other) != Response:
             return False
