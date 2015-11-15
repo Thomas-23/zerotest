@@ -1,7 +1,6 @@
 __author__ = 'Hari Jiang'
 
 import logging
-from urlparse import urlparse
 
 import werkzeug.wrappers
 
@@ -24,10 +23,8 @@ class Forwarder(object):
 
         headers = {k: v for k, v in request.headers if k not in ('Host',)}
         LOG.debug("forward to [%s]%s, headers: -----%s-----", request.method, self._forward_url, headers)
-        forward_to = urlparse(self._forward_url)
-        host = "{}:{}".format(forward_to.hostname, forward_to.port or 80)
-        forward_request = Request(scheme=forward_to.scheme, method=request.method, headers=headers, data=request.data,
-                                  params=request.query_string, path=request.path, host=host)
+        forward_request = Request(method=request.method, headers=headers, data=request.data,
+                                  params=request.query_string, path=request.path, endpoint=self._forward_url)
         response = forward_request.send_request()
         forward_response = Response.from_requests_response(response)
         self.trigger_on_forward_complete(forward_request, forward_response)

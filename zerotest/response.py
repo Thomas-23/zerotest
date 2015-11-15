@@ -11,8 +11,12 @@ class Response(object):
 
     @staticmethod
     def from_requests_response(response):
-        return Response(status=response.status_code, body=response.text,
-                        headers=dict(response.headers))
+        res = Response(status=response.status_code, body=response.text,
+                       headers=dict(response.headers))
+        # make dict key/value to unicode
+        import json
+        res.__dict__ = json.loads(json.dumps(res.__dict__))
+        return res
 
     def __eq__(self, other):
         if type(other) != Response:

@@ -63,7 +63,7 @@ def test_{{ c.func_name }}():
     request = {{ c.request.__repr__() }}
     real = Response.from_requests_response(request.send_request(verify=verify_ssl))
     expect = {{ c.response.__repr__() }}
-    matcher.match_responses(real, expect)
+    matcher.match_responses(expect, real)
 
 {% endfor %}
 """

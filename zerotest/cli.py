@@ -10,7 +10,7 @@ from zerotest.common import init_logging_config
 __author__ = 'Hari Jiang'
 
 DESCRIPTION = """
-Capture HTTP request/response and replay it for the test purpose.
+Capture HTTP request/response and convert to test code.
 """
 init_logging_config()
 
@@ -28,30 +28,32 @@ class CLI(object):
 
         server_parser = subparsers.add_parser('server', help='start zerotest local proxy server')
         server_parser.add_argument('url', help="target url: http://example.com")
-        server_parser.add_argument('-f', '--file', help="file path to store record, default: [random path]")
+        server_parser.add_argument('-f', '--file', help="file path to save record data, default: [random path]")
         server_parser.add_argument('-b', '--bind', help="local bind address, default: 127.0.0.1")
         server_parser.add_argument('-p', '--port', help="local port, default: 7000")
 
-        replay_parser = subparsers.add_parser('replay', help='replay from record data')
-        replay_parser.add_argument('file', help="path of record data file")
-        replay_parser.add_argument('--endpoint', help="replace requests endpoint, https://example.com")
-        replay_parser.add_argument('--ignore-headers', help="pass a list of ignored headers in response match",
-                                   nargs='*')
-        replay_parser.add_argument('--verify-ssl', help="enable ssl verify", dest="verify_ssl", action="store_true")
-        replay_parser.add_argument('--no-verify-ssl', help="disable ssl verify", dest="verify_ssl",
-                                   action="store_false")
-        replay_parser.set_defaults(verify_ssl=False)
-
         generate_parser = subparsers.add_parser('generate', help='generate test code from record data')
-        generate_parser.add_argument('file', help="path of record data file")
-        generate_parser.add_argument('--endpoint', help="replace requests endpoint, https://example.com")
-        generate_parser.add_argument('--ignore-headers', help="pass a list of ignored headers",
-                                     nargs='*')
-        generate_parser.add_argument('--verify-ssl', help="enable ssl verify", dest="verify_ssl", action="store_true")
-        generate_parser.add_argument('--no-verify-ssl', help="disable ssl verify", dest="verify_ssl",
-                                     action="store_false")
+        self._add_match_options_to_parser(generate_parser)
+
+        replay_parser = subparsers.add_parser('replay', help='replay test from record data')
+        self._add_match_options_to_parser(replay_parser)
+        replay_parser.add_argument('-t', '--pytest', help="pass options to pytest, like -t='-vv'", nargs='*')
 
         self._parser = parser
+
+    @staticmethod
+    def _add_match_options_to_parser(parser):
+        parser.add_argument('file', help="path of record data file")
+        parser.add_argument('--endpoint', help="replace requests endpoint, https://example.com")
+        parser.add_argument('--ignore-headers', help="list of headers ignore in response matching",
+                            nargs='*')
+        parser.add_argument('--ignore-fields',
+                            help="list of fields ignore in response matching, only work on serializable content-type",
+                            nargs='*')
+        parser.add_argument('--verify-ssl', help="enable ssl verify", dest="verify_ssl", action="store_true")
+        parser.add_argument('--no-verify-ssl', help="disable ssl verify", dest="verify_ssl",
+                            action="store_false")
+        parser.set_defaults(verify_ssl=False)
 
     def run(self, argv=sys.argv[1:]):
         """
@@ -115,33 +117,30 @@ class CLI(object):
         run record file
         :return:
         """
-        from zerotest.record.record_test_runner import RecordTestRunner
+        import tempfile
+        import pytest
 
+        generator = self._generator_from_command()
+        pytest_args = self._parse_result.pytest or []
+        with tempfile.NamedTemporaryFile('w+', suffix='.py') as f:
+            f.write(generator.generate())
+            f.flush()
+            return pytest.main([f.name] + pytest_args)
+
+    def _generator_from_command(self):
+        from zerotest.generator.generator import Generator
         filepath = self._parse_result.file
-        if not os.path.exists(filepath):
-            LOG.warning("file '{}' not exists".format(filepath))
-
-        endpoint = self._parse_result.endpoint
-        ignore_headers = self._parse_result.ignore_headers or []
-        verify_ssl = self._parse_result.verify_ssl
-
-        _, failed = RecordTestRunner(filepath, endpoint=endpoint, ignore_headers=ignore_headers,
-                                     verify_ssl=verify_ssl).run()
-
-        # exit with code 1 if any case failed
-        if failed > 0:
-            return 1
+        options = self.get_cli_options('endpoint', 'verify_ssl')
+        match_options = self.get_cli_options('ignore_headers')
+        generator = Generator(filepath, options=options, match_options=match_options)
+        return generator
 
     def command_generate(self):
         """
         sub-command generate
         :return:
         """
-        from zerotest.generator.generator import Generator
-        filepath = self._parse_result.file
-        options = self.get_cli_options('endpoint', 'verify_ssl')
-        match_options = self.get_cli_options('ignore_headers')
-        generator = Generator(filepath, options=options, match_options=match_options)
+        generator = self._generator_from_command()
         print(generator.generate())
 
 

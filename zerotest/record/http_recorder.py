@@ -1,8 +1,8 @@
 __author__ = 'Hari Jiang'
 
-from Queue import Queue, Empty
-import threading
 import logging
+import threading
+from Queue import Queue, Empty
 
 from zerotest.record.formatter import Formatter
 
@@ -37,15 +37,16 @@ class HTTPRecorder(object):
         self._service_thread.start()
 
     def _loop_work(self):
-        record_file = open(self.filepath, "a+b")
-        while True:
-            task = self._queue.get()
-            LOG.debug("receive task %s", task)
-            if task is None:
-                record_file.close()
-                return
+        import codecs
+        with codecs.open(self.filepath, 'a+', 'utf-8') as record_file:
+            while True:
+                task = self._queue.get()
+                LOG.debug("receive task %s", task)
+                if task is None:
+                    record_file.close()
+                    return
 
-            self._formatter.write_record(record_file, task[0], task[1])
+                self._formatter.write_record(record_file, task[0], task[1])
 
     def record_http(self, request, response):
         """

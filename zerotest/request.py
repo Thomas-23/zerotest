@@ -8,7 +8,8 @@ __author__ = 'Hari Jiang'
 
 
 class Request(object):
-    def __init__(self, scheme=None, method=None, params=None, host=None, path=None, headers=None, data=None):
+    def __init__(self, scheme=None, method=None, params=None, host=None, path=None, headers=None, data=None,
+                 endpoint=None):
         self.scheme = scheme
         self.method = method
         self.headers = headers
@@ -16,6 +17,8 @@ class Request(object):
         self.params = params
         self.host = host
         self.path = path
+        if endpoint:
+            self.endpoint = endpoint
 
     @property
     def endpoint(self):

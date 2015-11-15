@@ -27,8 +27,11 @@ class Generator(object):
         return None if records data not found
         :return:
         """
+
+        import codecs
+
         records = []
-        with open(self._filepath, 'r') as record_file:
+        with codecs.open(self._filepath, 'r', 'utf-8') as record_file:
             while True:
                 result = self._formatter.read_record(record_file)
                 if not result:
