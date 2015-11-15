@@ -26,7 +26,7 @@ class TestCommand(Command):
 
 
 setup(name='zerotest',
-      version='0.0.2',
+      version='0.0.3',
       long_description=long_description,
       description='Capture HTTP request/response and convert to test code.',
       author='Hari Jiang',
