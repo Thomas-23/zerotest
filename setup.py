@@ -2,31 +2,39 @@
 
 import sys
 
+from setuptools import Command
 from setuptools import find_packages, setup
-from setuptools.command.test import test
+
+with open('README.md') as fd:
+    long_description = fd.read()
 
 
-class PyTest(test):
+class TestCommand(Command):
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
     def finalize_options(self):
-        test.finalize_options(self)
-        self.test_args = ['tests']
-        self.test_suite = True
+        pass
 
-    def run_tests(self):
+    def run(self):
         # import here, cause outside the eggs aren't loaded
         import pytest
-        errno = pytest.main(self.test_args)
+        errno = pytest.main(['tests'])
         sys.exit(errno)
 
 
 setup(name='zerotest',
       version='0.0.2',
-      description='Capture HTTP request/response and replay it for the test purpose',
+      long_description=long_description,
+      description='Capture HTTP request/response and convert to test code.',
       author='Hari Jiang',
       author_email='hari.jiang@outlook.com',
       url='https://github.com/jjyr/zerotest',
       license='MIT',
-      cmdclass={'test': PyTest},
+      cmdclass={'test': TestCommand},
+      platforms=['unix', 'linux', 'osx'],
       packages=find_packages(),
       install_requires=[
           'requests>=2.2.1',
