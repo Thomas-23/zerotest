@@ -2,24 +2,23 @@
 
 Zerotest makes it easy to test API server, start a micro proxy, send requests, and generate test code by these behaviours.
 
-## Install
-stable version: `pip install zerotest`
+> *Zerotest makes test api server like a boss!*
 
-develop version: `pip install git+https://github.com/jjyr/zerotest.git`
+## Install
+Stable version: `pip install zerotest`
+
+Develop version: `pip install git+https://github.com/jjyr/zerotest.git`
 
 ## Usage
-1. start a local proxy to capture http traffic `zerotest server https://api.github.com -f octocat.data`
+1. Start a local proxy to capture http traffic `zerotest server https://api.github.com -f octocat.data`
 
-2. make few requests `curl -i http://localhost:7000/users/octocat`
+2. Make few requests `curl -i http://localhost:7000/users/octocat`
 
-3. press `C-c` exit local proxy
+3. Press `C-c` to exit local proxy
 
-4. generate test code `generate octocat.data --ignore-all-headers > test_octocat.py`
+4. Generate test code `zerotest generate octocat.data --ignore-all-headers > test_octocat.py`
 
-5. type `py.test test_octocat.py`
- 
- 
-Zerotest makes test api server like a boss!
+5. Type `py.test test_octocat.py` to run test
 
 ## Contribute
 * Open issue if found bugs or some cool ideas
