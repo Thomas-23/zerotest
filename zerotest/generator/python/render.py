@@ -32,9 +32,6 @@ class Renderer(object):
             if count > 0:
                 func_name = '{}_{}'.format(func_name, count)
 
-            if endpoint:
-                req.endpoint = endpoint
-
             if ignore_all_headers:
                 content_type = res.get_header('content-type')
                 if content_type:
@@ -64,10 +61,15 @@ from zerotest.response_matcher import ResponseMatcher
 
 matcher = ResponseMatcher({{ match_params }})
 verify_ssl = {{ options.verify_ssl or False }}
-
+{% if options.endpoint %}
+endpoint = {{ options.endpoint.__repr__() }}
+{% endif %}
 {% for c in cases %}
 def test_{{ c.func_name }}():
     request = {{ c.request.__repr__() }}
+    {% if options.endpoint %}
+    request.endpoint = endpoint
+    {% endif %}
     real = Response.from_requests_response(request.send_request(verify=verify_ssl))
     expect = {{ c.response.__repr__() }}
     matcher.match_responses(expect, real)

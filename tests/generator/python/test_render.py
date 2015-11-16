@@ -44,11 +44,11 @@ def test_renderer_with_options():
     renderer = Renderer(options=options, match_options=match_options)
 
     cases = [
-        dict(request=Request(scheme='http', method='GET', host='test.com', path='/',
+        dict(request=Request(scheme='http', method='GET', host='for_test.org', path='/',
                              headers=dict(header_1='1'), data='just_for_test')
              , response=Response(status=200, headers=dict(content_type="text"), body='ok')
              , func_name='get_root'),
-        dict(request=Request(scheme='http', method='POST', host='test.com', path='/second_request',
+        dict(request=Request(scheme='https', method='POST', host='for_test.org', path='/second_request',
                              headers=dict(header_a='a'), data='second_request')
              , response=Response(status=200, headers=dict(content_type="text"), body='ok')
              , func_name='post_second_request'),
