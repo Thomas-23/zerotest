@@ -4,7 +4,6 @@ import requests
 
 from zerotest.utils.generator_helper import dict_to_param_style_code
 
-__author__ = 'Hari Jiang'
 
 
 class Request(object):

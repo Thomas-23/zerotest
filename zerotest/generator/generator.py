@@ -2,7 +2,6 @@ import logging
 
 from zerotest.record.formatter import Formatter
 
-__author__ = 'Hari Jiang'
 
 LOG = logging.getLogger(__name__)
 

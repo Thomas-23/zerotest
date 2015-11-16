@@ -3,7 +3,6 @@ import json
 from zerotest.request import Request
 from zerotest.response import Response
 
-__author__ = 'Hari Jiang'
 
 
 class Formatter(object):
