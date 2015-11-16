@@ -3,6 +3,7 @@
 import re
 
 INVALID_METHOD_R = re.compile(r'[^a-zA-Z0-9_]')
+MULTI_UNDERSCORE_R = re.compile(r'[_]+')
 
 
 def get_name_from_request(request):
@@ -28,7 +29,21 @@ def _path_to_func_name(path):
     :type path: unicode
     :rtype: unicode
     """
-    return 'root' if path == '/' else INVALID_METHOD_R.sub('_', path)
+    if path == '/':
+        return 'root'
+
+    # Replace any occurances of more than one underscore with a single
+    # instance. (ex: path = '/#anchor' -> '__anchor')
+    clean_path = MULTI_UNDERSCORE_R.sub(
+        '_',
+        # Replace any invalid method name characters with an underscore.
+        INVALID_METHOD_R.sub(
+            '_',
+            path
+        )
+    )
+
+    return clean_path[1:] if clean_path.startswith(u'_') else clean_path
 
 
 def dict_to_param_style_code(d):
