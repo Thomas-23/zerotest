@@ -1,8 +1,6 @@
 from zerotest.response import Response
 from zerotest.response_matcher import ResponseMatcher, MatchError
 
-__author__ = 'Hari Jiang'
-
 
 def raised_error(func, err_type):
     raised = False

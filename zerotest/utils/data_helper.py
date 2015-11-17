@@ -1,4 +1,3 @@
-__author__ = 'Hari Jiang'
 
 
 def delete_path_from_dict(d, path):

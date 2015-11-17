@@ -1,6 +1,5 @@
 import logging
 
-__author__ = 'Hari Jiang'
 
 MatchError = AssertionError
 

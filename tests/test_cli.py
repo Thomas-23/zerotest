@@ -1,7 +1,5 @@
 from zerotest.cli import CLI
 
-__author__ = 'Hari Jiang'
-
 
 class AttributeDict(object):
     def __init__(self, **kwargs):

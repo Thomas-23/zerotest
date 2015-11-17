@@ -1,7 +1,5 @@
 from copy import copy
 
-__author__ = 'Hari Jiang'
-
 
 def dict_to_wsgi_headers(headers):
     wsgi_headers = []

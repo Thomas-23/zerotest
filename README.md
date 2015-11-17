@@ -20,6 +20,9 @@ Develop version: `pip install git+https://github.com/jjyr/zerotest.git`
 
 5. Type `py.test test_octocat.py` to run test
 
+## Contributors
+[Contributors](https://github.com/jjyr/zerotest/graphs/contributors)
+
 ## Contribute
 * Open issue if found bugs or some cool ideas
 * Feel free to ask if have any questions

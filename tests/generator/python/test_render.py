@@ -2,8 +2,6 @@ from zerotest.generator.python.render import Renderer
 from zerotest.request import Request
 from zerotest.response import Response
 
-__author__ = 'Hari Jiang'
-
 
 def test_renderer():
     options = dict()
