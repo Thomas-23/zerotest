@@ -33,16 +33,14 @@ def _path_to_func_name(path):
 
     # Replace any occurances of more than one underscore with a single
     # instance. (ex: path = '/#anchor' -> '__anchor')
-    clean_path = MULTI_UNDERSCORE_R.sub(
+    return MULTI_UNDERSCORE_R.sub(
         '_',
         # Replace any invalid method name characters with an underscore.
         INVALID_METHOD_R.sub(
             '_',
             path
         )
-    )
-
-    return clean_path[1:] if clean_path.startswith(u'_') else clean_path
+    ).strip('_')
 
 
 def dict_to_param_style_code(d):
