@@ -1,9 +1,6 @@
 from urlparse import urlparse
-
 import requests
-
 from zerotest.utils.generator_helper import dict_to_param_style_code
-
 
 
 class Request(object):

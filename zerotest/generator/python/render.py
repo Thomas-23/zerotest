@@ -3,11 +3,8 @@ test renderer of python
 """
 
 from collections import defaultdict
-
 from jinja2 import Template
-
 from zerotest.utils.generator_helper import get_name_from_request, dict_to_param_style_code
-
 
 
 class Renderer(object):

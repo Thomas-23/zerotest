@@ -1,8 +1,6 @@
 from collections import OrderedDict
-
 from zerotest.request import Request
 from zerotest.utils.generator_helper import get_name_from_request, dict_to_param_style_code
-
 
 
 def test_get_name_from_request():
