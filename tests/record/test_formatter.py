@@ -1,4 +1,3 @@
-__author__ = 'Hari Jiang'
 from StringIO import StringIO
 
 from zerotest.record.formatter import Formatter

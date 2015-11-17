@@ -1,6 +1,5 @@
 from zerotest.response import Response
 
-__author__ = 'Hari Jiang'
 
 
 def test_response__str__():

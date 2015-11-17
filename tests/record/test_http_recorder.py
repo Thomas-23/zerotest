@@ -6,7 +6,6 @@ from zerotest.record.http_recorder import HTTPRecorder
 from zerotest.request import Request
 from zerotest.response import Response
 
-__author__ = 'Hari Jiang'
 
 req = Request(scheme="http", method="get", params="query_string=here", host="example.com", path="/test",
               headers={"just": "header"}, data="request")

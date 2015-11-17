@@ -1,4 +1,3 @@
-__author__ = 'Hari Jiang'
 
 
 def get_name_from_request(request):

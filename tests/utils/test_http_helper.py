@@ -1,6 +1,5 @@
 from zerotest.utils import http_helper
 
-__author__ = 'Hari Jiang'
 
 
 def test_dict_to_wsgi_headers():

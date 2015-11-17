@@ -1,4 +1,3 @@
-__author__ = 'Hari Jiang'
 
 from werkzeug.serving import run_simple
 

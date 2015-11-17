@@ -1,6 +1,5 @@
 from zerotest.request import Request
 
-__author__ = 'Hari Jiang'
 
 req = Request(scheme="http", method="GET", params={"hello": "test"}, host="example.com", path="/test",
               headers={"Auth": "FOR_TEST"}, data="ok")

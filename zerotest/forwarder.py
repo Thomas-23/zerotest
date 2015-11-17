@@ -1,4 +1,3 @@
-__author__ = 'Hari Jiang'
 
 import logging
 

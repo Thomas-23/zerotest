@@ -7,7 +7,6 @@ from urlparse import urlparse
 
 from zerotest.common import init_logging_config
 
-__author__ = 'Hari Jiang'
 
 DESCRIPTION = """
 Capture HTTP request/response and convert to test code.
