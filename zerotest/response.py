@@ -1,7 +1,6 @@
 from zerotest.utils.generator_helper import dict_to_param_style_code
 
 
-
 class Response(object):
     def __init__(self, status=None, headers=None, body=None):
         self.status = status

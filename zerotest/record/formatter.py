@@ -1,8 +1,6 @@
 import json
-
 from zerotest.request import Request
 from zerotest.response import Response
-
 
 
 class Formatter(object):

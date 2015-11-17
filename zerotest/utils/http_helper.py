@@ -1,7 +1,6 @@
 from copy import copy
 
 
-
 def dict_to_wsgi_headers(headers):
     wsgi_headers = []
     for k, v in headers.items():

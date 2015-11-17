@@ -2,7 +2,6 @@ from zerotest.response import Response
 from zerotest.response_matcher import ResponseMatcher, MatchError
 
 
-
 def raised_error(func, err_type):
     raised = False
     try:

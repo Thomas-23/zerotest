@@ -3,7 +3,6 @@ from zerotest.request import Request
 from zerotest.response import Response
 
 
-
 def test_renderer():
     options = dict()
     match_options = dict()
