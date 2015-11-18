@@ -1,12 +1,25 @@
 #!/usr/bin/env python
 
+import logging
+import subprocess
 import sys
 
 from setuptools import Command
 from setuptools import find_packages, setup
 
-with open('README.md') as fd:
-    long_description = fd.read()
+from zerotest.common import init_logging_config
+
+init_logging_config()
+
+LOG = logging.getLogger(__name__)
+
+try:
+    long_description = subprocess.check_output(["pandoc", "README.md", "-f", "markdown", "-t", "rst"])
+except (OSError, subprocess.CalledProcessError) as e:
+    LOG.error("call pandoc error: %s", e)
+    LOG.warning("failed convert README from markdown to rst, read as text")
+    with open('README.md') as fd:
+        long_description = fd.read()
 
 
 class TestCommand(Command):
