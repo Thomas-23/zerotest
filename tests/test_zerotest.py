@@ -1,13 +1,13 @@
 import json
 import os
-from tests.helper.process import call_process
 import unittest
-from urlparse import urljoin
 
 import requests
 
+from tests.helper.process import call_process
 from tests.mock.mock_server import Server
 from tests.mock.zerotest_proxy import Proxy
+from zerotest.utils.url_helper import urljoin
 
 server = None
 proxy = None

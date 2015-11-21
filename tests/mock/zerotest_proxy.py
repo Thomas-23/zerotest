@@ -5,7 +5,7 @@ proxy of zerotest proxy server
 import tempfile
 import time
 from subprocess import Popen
-from urlparse import urljoin
+from zerotest.utils.url_helper import urljoin
 
 import requests
 

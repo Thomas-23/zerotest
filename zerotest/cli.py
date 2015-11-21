@@ -3,10 +3,9 @@ import logging
 import os
 import sys
 import tempfile
-from urlparse import urlparse
 
 from zerotest.common import init_logging_config
-
+from zerotest.utils.url_helper import urlparse
 
 DESCRIPTION = """
 Capture HTTP request/response and convert to test code.

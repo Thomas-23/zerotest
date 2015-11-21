@@ -1,9 +1,9 @@
-
 import logging
+
 import threading
-from Queue import Queue, Empty
 
 from zerotest.record.formatter import Formatter
+from zerotest.utils.queue_helper import Queue, Empty
 
 LOG = logging.getLogger(__name__)
 

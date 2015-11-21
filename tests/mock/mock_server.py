@@ -3,7 +3,6 @@ Mocked API server
 """
 import threading
 import time
-from urlparse import urljoin
 
 import requests
 from werkzeug.serving import run_simple
@@ -11,6 +10,7 @@ from werkzeug.wrappers import Request, Response
 
 from tests.mock import pickup_port
 from zerotest.utils.generator_helper import get_name_from_request
+from zerotest.utils.url_helper import urljoin
 
 
 class Server(object):
