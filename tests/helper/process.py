@@ -1,9 +1,10 @@
 import subprocess
+import shlex
 
 from tests import DEBUG
 
 
-def call_process(args):
+def call_process(cmd):
     try:
         from subprocess import DEVNULL
     except ImportError:
@@ -15,4 +16,6 @@ def call_process(args):
     else:
         out = DEVNULL
         close_fds = True
+
+    args = shlex.split(cmd)
     return subprocess.call(args, stdout=out, stderr=out, close_fds=close_fds)

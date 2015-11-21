@@ -14,7 +14,7 @@ from zerotest.utils.url_helper import urljoin
 
 server = None
 proxy = None
-zerotest_cmd = ["python", "zerotest/cli.py"]
+zerotest_cmd = "python zerotest/cli.py"
 
 
 def init_test_env():
@@ -75,11 +75,9 @@ class TestZerotest(unittest.TestCase):
 
     def test_replay(self):
         # test replay
-        replay = lambda args: call_process(zerotest_cmd + args)
-        assert replay(["replay", "not_exist_file"]) == 1
-        assert replay(["replay", proxy.data_file]) == 1
-        assert replay(["replay", proxy.data_file, "--ignore-all-headers"]) == 1
-        assert replay(["replay", proxy.data_file,
-                       "--ignore-all-headers", "--ignore-fields", "count"]) == 0
-        assert replay(["replay", proxy.data_file,
-                       "--ignore-headers", "date", "--ignore-fields", "count"]) == 0
+        replay = lambda args: call_process(zerotest_cmd + args + " -t='-vv'")
+        assert replay(" replay not_exist_file") != 0
+        assert replay(" replay {}".format(proxy.data_file)) != 0
+        assert replay(" replay {} --ignore-all-headers".format(proxy.data_file)) != 0
+        assert replay(" replay {} --ignore-all-headers --ignore-fields count".format(proxy.data_file)) == 0
+        assert replay(" replay {} --ignore-headers date --ignore-fields count".format(proxy.data_file)) == 0
