@@ -5,6 +5,8 @@ python:
 install: "pip install -U tox"
 
 env:
+  global:
+    - ZEROTEST_DEBUG=true
   matrix:
     - TESTENV=py27
     - TESTENV=py33
