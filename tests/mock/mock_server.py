@@ -87,12 +87,15 @@ class Server(object):
         self.start_daemon('127.0.0.1', port)
         test_count = 10
         while test_count > 0:
-            if self.running:
-                r = requests.get(urljoin(self.url, '/count'))
-                if r.status_code == 200:
-                    return
+            try:
+                if self.running:
+                    r = requests.get(urljoin(self.url, '/count'))
+                    if r.status_code == 200:
+                        return
 
-                print("wait server start, response", r.status_code, r.text)
+                    print("wait server start, response", r.status_code, r.text)
+            except requests.exceptions.ConnectionError:
+                pass
 
             time.sleep(1)
             test_count -= 1
