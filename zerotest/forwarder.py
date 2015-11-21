@@ -1,4 +1,3 @@
-
 import logging
 
 import werkzeug.wrappers
@@ -17,7 +16,6 @@ class Forwarder(object):
 
     def __call__(self, environ, start_response):
         # pop incorrect content length, I don't know why
-        environ.pop('CONTENT_LENGTH', None)
         request = werkzeug.wrappers.Request(environ)
 
         headers = {k: v for k, v in request.headers if k not in ('Host',)}
