@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import unicode_literals
 
 import logging
 import subprocess
@@ -14,7 +15,7 @@ init_logging_config()
 LOG = logging.getLogger(__name__)
 
 try:
-    long_description = subprocess.check_output(["pandoc", "README.md", "-f", "markdown", "-t", "rst"])
+    long_description = '{}'.format(subprocess.check_output(["pandoc", "README.md", "-f", "markdown", "-t", "rst"]))
 except (OSError, subprocess.CalledProcessError) as e:
     LOG.error("call pandoc error: %s", e)
     LOG.warning("failed convert README from markdown to rst, read as text")

@@ -5,11 +5,11 @@ proxy of zerotest proxy server
 import tempfile
 import time
 from subprocess import Popen
-from zerotest.utils.url_helper import urljoin
 
 import requests
 
 from tests.mock import pickup_port
+from zerotest.utils.url_helper import urljoin
 
 
 class Proxy(object):
@@ -27,11 +27,12 @@ class Proxy(object):
         if not self._process:
             return False
         self._process.poll()
-        return not self._process.returncode
+        return self._process.returncode is None
 
     def shutdown(self):
         if self.running:
-            self._process.kill()
+            self._process.terminate()
+            self._process.wait()
 
     def start_server(self, url):
         """
