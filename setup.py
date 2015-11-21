@@ -9,13 +9,14 @@ from setuptools import Command
 from setuptools import find_packages, setup
 
 from zerotest.common import init_logging_config
+from zerotest.utils.encode_helper import ensure_unicode
 
 init_logging_config()
 
 LOG = logging.getLogger(__name__)
 
 try:
-    long_description = '{}'.format(subprocess.check_output(["pandoc", "README.md", "-f", "markdown", "-t", "rst"]))
+    long_description = ensure_unicode(subprocess.check_output(["pandoc", "README.md", "-f", "markdown", "-t", "rst"]))
 except (OSError, subprocess.CalledProcessError) as e:
     LOG.error("call pandoc error: %s", e)
     LOG.warning("failed convert README from markdown to rst, read as text")
@@ -40,7 +41,7 @@ class TestCommand(Command):
 
 
 setup(name='zerotest',
-      version='1.1.0',
+      version='1.1.1',
       long_description=long_description,
       description="Lazy guy's testing tool, test your API server like a boss.",
       author='Hari Jiang',
