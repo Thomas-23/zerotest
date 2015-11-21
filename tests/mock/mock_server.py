@@ -1,8 +1,11 @@
+from __future__ import unicode_literals
+
 """
 Mocked API server
 """
 import threading
 import time
+import json
 
 import requests
 from werkzeug.serving import run_simple
@@ -29,7 +32,6 @@ class Server(object):
             return Response("non route", status=404)
 
     def get_count(self, request):
-        import json
         return Response(json.dumps(dict(count=self.count)),
                         content_type='application/json')
 
@@ -40,6 +42,10 @@ class Server(object):
     def post_raw_to_json(self, request):
         data = request.data
         return Response(data,
+                        content_type='application/json')
+
+    def get_chinese_hello_world(self, request):
+        return Response(json.dumps(dict(count=self.count, content="你好,世界")),
                         content_type='application/json')
 
     def delete_shutdown_server(self, request):

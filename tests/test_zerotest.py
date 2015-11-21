@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import json
 import os
 import unittest
@@ -64,6 +66,10 @@ class TestZerotest(unittest.TestCase):
         res = requests.post(urljoin(proxy.url, 'raw/to.json'), data=json.dumps(data))
         res.raise_for_status()
         assert data == res.json()
+
+        res = requests.get(urljoin(proxy.url, 'chinese/hello-world'))
+        res.raise_for_status()
+        assert res.json()['content'] == '你好,世界'
         proxy.shutdown()
 
     def test_replay(self):
