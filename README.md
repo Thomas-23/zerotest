@@ -9,7 +9,7 @@ Stable version: `pip install zerotest`
 
 Develop version: `pip install git+https://github.com/jjyr/zerotest.git`
 
-*zerotest require python2.7 or 3.2+*
+**zerotest require python2.7 or 3.2+**
 
 ## Usage
 1. Start a local proxy to capture http traffic `zerotest server https://api.github.com -f octocat.data`
