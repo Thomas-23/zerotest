@@ -54,7 +54,7 @@ setup(name='zerotest',
           'requests>=2.2.1',
           'Werkzeug>=0.10.4',
           'jinja2>=2.8',
-          'pytest>=2.8.2',
+          'pytest>=2.8.3',
       ],
       entry_points={
           'console_scripts': [

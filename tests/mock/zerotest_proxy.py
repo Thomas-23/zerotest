@@ -2,6 +2,7 @@
 proxy of zerotest proxy server
 """
 
+import signal
 import tempfile
 import time
 from subprocess import Popen
@@ -31,7 +32,7 @@ class Proxy(object):
 
     def shutdown(self):
         if self.running:
-            self._process.terminate()
+            self._process.send_signal(signal.SIGINT)
             self._process.wait()
 
     def start_server(self, url):
