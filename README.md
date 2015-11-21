@@ -23,7 +23,7 @@ Develop version: `pip install git+https://github.com/jjyr/zerotest.git`
 5. Type `py.test test_octocat.py` to run test
 
 ## Develop
-Export debug flag environment `ZEROTEST_DEBUG=true` to see verbose logs during program or test running.
+Export debug flag `ZEROTEST_DEBUG=true` to see verbose logs during program or test running.
 
 ## Contributors
 [Contributors](https://github.com/jjyr/zerotest/graphs/contributors)
