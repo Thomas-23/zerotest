@@ -1,4 +1,4 @@
-from io import StringIO
+from zerotest.utils.io_helper import StringIO
 
 from zerotest.record.formatter import Formatter
 from zerotest.request import Request

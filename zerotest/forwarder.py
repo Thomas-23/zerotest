@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import logging
 
 import werkzeug.wrappers
@@ -16,10 +18,14 @@ class Forwarder(object):
 
     def __call__(self, environ, start_response):
         # pop incorrect content length, I don't know why
+        if not environ.get('CONTENT_LENGTH'):
+            environ.pop('CONTENT_LENGTH', None)
+
         request = werkzeug.wrappers.Request(environ)
 
         headers = {k: v for k, v in request.headers if k not in ('Host',)}
-        LOG.debug("forward to [%s]%s, headers: -----%s-----", request.method, self._forward_url, headers)
+        LOG.debug("forward to [%s]%s, headers: -----%s-----, data %s",
+                  request.method, self._forward_url, headers, request.data)
         forward_request = Request(method=request.method, headers=headers, data=request.data,
                                   params=request.query_string, path=request.path, endpoint=self._forward_url)
         response = forward_request.send_request()

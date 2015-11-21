@@ -1,5 +1,4 @@
 import logging
-
 import threading
 
 from zerotest.record.formatter import Formatter
@@ -46,6 +45,8 @@ class HTTPRecorder(object):
                     return
 
                 self._formatter.write_record(record_file, task[0], task[1])
+                record_file.flush()
+                LOG.debug("writen task %s", task)
 
     def record_http(self, request, response):
         """

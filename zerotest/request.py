@@ -4,6 +4,7 @@ import requests
 
 from zerotest.utils.generator_helper import dict_to_param_style_code
 from zerotest.utils.url_helper import urlparse
+from zerotest.utils.encode_helper import ensure_unicode
 
 
 class Request(object):
@@ -12,10 +13,10 @@ class Request(object):
         self.scheme = scheme
         self.method = method
         self.headers = headers
-        self.data = data
-        self.params = params
         self.host = host
         self.path = path
+        self.params = ensure_unicode(params)
+        self.data = ensure_unicode(data)
         if endpoint:
             self.endpoint = endpoint
 

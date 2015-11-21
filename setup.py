@@ -55,6 +55,7 @@ setup(name='zerotest',
           'Werkzeug>=0.10.4',
           'jinja2>=2.8',
           'pytest>=2.8.3',
+          'six>=1.10.0',
       ],
       entry_points={
           'console_scripts': [

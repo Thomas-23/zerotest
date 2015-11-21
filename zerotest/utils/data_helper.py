@@ -1,5 +1,3 @@
-
-
 def delete_path_from_dict(d, path):
     """
     delete key path from dict
