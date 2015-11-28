@@ -14,7 +14,7 @@ init_logging_config()
 
 LOG = logging.getLogger(__name__)
 
-description = "Lazy guy's testing tool. Capture HTTP traffic and generate python integrated test for your API server."
+description = "Lazy guy's testing tool. Capture HTTP traffic and generate python integration test for your API server."
 
 try:
     long_description = subprocess.check_output(["pandoc", "README.md", "-f", "markdown", "-t", "rst"]).decode('utf-8')
