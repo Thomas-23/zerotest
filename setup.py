@@ -14,6 +14,8 @@ init_logging_config()
 
 LOG = logging.getLogger(__name__)
 
+description = "Lazy guy's testing tool. Capture HTTP traffic and generate python integrated test for your API server."
+
 try:
     long_description = subprocess.check_output(["pandoc", "README.md", "-f", "markdown", "-t", "rst"]).decode('utf-8')
 except (OSError, subprocess.CalledProcessError) as e:
@@ -42,7 +44,7 @@ class TestCommand(Command):
 setup(name='zerotest',
       version='1.1.2',
       long_description=long_description,
-      description="Lazy guy's testing tool, test your API server like a boss.",
+      description=description,
       author='Hari Jiang',
       author_email='hari.jiang@outlook.com',
       url='https://github.com/jjyr/zerotest',
