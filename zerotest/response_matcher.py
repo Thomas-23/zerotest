@@ -1,7 +1,8 @@
+from __future__ import unicode_literals
+
 import logging
 
-
-MatchError = AssertionError
+from zerotest.fuzzy_matcher import FuzzyMatcher
 
 LOG = logging.getLogger(__name__)
 
@@ -9,13 +10,15 @@ _SERIALIZABLE_CONTENT_TYPE = {'application/json': 'json'}
 
 
 class ResponseMatcher(object):
-    def __init__(self, ignore_headers=None, ignore_all_headers=False, ignore_fields=None):
+    def __init__(self, fuzzy_match=False, ignore_headers=None, ignore_all_headers=False, ignore_fields=None):
         """
+        :param fuzzy_match: enable fuzzy match fields
         :param ignore_headers: ignored headers when match response
         :param ignore_fields: ignored body fields, only work when response content-type is serializable type
         :return:
         """
         ignore_headers = ignore_headers or []
+        self._fuzzy_match = fuzzy_match
         self._ignore_headers = set(map(lambda h: h.upper(), ignore_headers))
         self._ignore_all_headers = ignore_all_headers
         self._ignore_fields = ignore_fields
@@ -52,7 +55,7 @@ class ResponseMatcher(object):
         self.__delete_ignore_fields(content)
         return content
 
-    def _compare_body(self, r1, r2):
+    def _prepare_body_data(self, r1, r2):
         r1_content_type = r1.get_header('Content-Type')
         r2_content_type = r2.get_header('Content-Type')
         assert r1_content_type == r2_content_type
@@ -65,7 +68,18 @@ class ResponseMatcher(object):
                 r1_content = handler(r1_content)
                 r2_content = handler(r2_content)
 
-        assert r1_content == r2_content
+        return r1_content, r2_content
+
+    def _compare_body(self, r1, r2):
+        r1_content, r2_content = self._prepare_body_data(r1, r2)
+        is_formatted = all([isinstance(c, dict) for c in (r1_content, r2_content)])
+
+        if self._fuzzy_match and is_formatted:
+            fuzzy_matcher = FuzzyMatcher()
+            fuzzy_matcher.set_items(r1_content, r2_content)
+            fuzzy_matcher.compare(r1_content, r2_content)
+        else:
+            assert r1_content == r2_content
 
     def match_responses(self, expect, real):
         """
