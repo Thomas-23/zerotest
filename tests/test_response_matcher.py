@@ -2,6 +2,7 @@ import json
 
 import pytest
 
+from zerotest.fuzzy_matcher import FuzzyMatchWarning
 from zerotest.response import Response
 from zerotest.response_matcher import ResponseMatcher
 
@@ -90,6 +91,8 @@ def test_ignore_fields_compare():
 
 def test_fuzzy_compare():
     matcher = ResponseMatcher(fuzzy_match=True)
+    allow_none_matcher = ResponseMatcher(fuzzy_match=True, fuzzy_match_options={"allow_none": True})
+    allow_blank_matcher = ResponseMatcher(fuzzy_match=True, fuzzy_match_options={"allow_blank": True})
     r1 = Response(status=200, headers={}, body=json.dumps({"id": 1, "name": "test"}))
     r2 = Response(status=200, headers={}, body=json.dumps({"id": 2, "name": "test", "some_field": 0}))
     # not work if not content-type
@@ -182,6 +185,8 @@ def test_fuzzy_compare():
         })
     with pytest.raises(AssertionError):
         matcher.match_responses(r1, r2)
+    with pytest.warns(FuzzyMatchWarning):
+        allow_blank_matcher.match_responses(r1, r2)
 
     r2.body = json.dumps(
         {
@@ -189,24 +194,17 @@ def test_fuzzy_compare():
             [{"id": 4, "name": "test4"}],
             "parent": None
         })
-    with pytest.warns():
-        with pytest.raises(AssertionError):
-            matcher.match_responses(r1, r2)
+    with pytest.raises(AssertionError):
+        matcher.match_responses(r1, r2)
+    with pytest.raises(AssertionError):
+        allow_blank_matcher.match_responses(r1, r2)
+    with pytest.warns(FuzzyMatchWarning):
+        allow_none_matcher.match_responses(r1, r2)
 
     r2.body = json.dumps(
         {
             "id": 42, "name": "test", "children":
             [],
             "parent": {"id": 5, "name": "test5"}
-        })
-    with pytest.warns():
-        with pytest.raises(AssertionError):
-            matcher.match_responses(r1, r2)
-
-    r1.body = json.dumps(
-        {
-            "id": 1, "name": "test", "children":
-            [],
-            "parent": {"id": 0, "name": "test0"}
         })
     matcher.match_responses(r1, r2)

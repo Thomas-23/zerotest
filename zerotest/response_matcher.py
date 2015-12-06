@@ -10,7 +10,8 @@ _SERIALIZABLE_CONTENT_TYPE = {'application/json': 'json'}
 
 
 class ResponseMatcher(object):
-    def __init__(self, fuzzy_match=False, ignore_headers=None, ignore_all_headers=False, ignore_fields=None):
+    def __init__(self, fuzzy_match=False, fuzzy_match_options=None, ignore_headers=None, ignore_all_headers=False,
+                 ignore_fields=None):
         """
         :param fuzzy_match: enable fuzzy match fields
         :param ignore_headers: ignored headers when match response
@@ -19,6 +20,7 @@ class ResponseMatcher(object):
         """
         ignore_headers = ignore_headers or []
         self._fuzzy_match = fuzzy_match
+        self._fuzzy_match_options = fuzzy_match_options or {}
         self._ignore_headers = set(map(lambda h: h.upper(), ignore_headers))
         self._ignore_all_headers = ignore_all_headers
         self._ignore_fields = ignore_fields
@@ -38,7 +40,7 @@ class ResponseMatcher(object):
 
     def __delete_ignore_fields(self, content):
         from zerotest.utils.data_helper import delete_path_from_dict
-        for field_path in self._ignore_fields:
+        for field_path in self._ignore_fields or ():
             if field_path in content:
                 content.pop(field_path, None)
             else:
@@ -62,7 +64,7 @@ class ResponseMatcher(object):
         r1_content = r1.body
         r2_content = r2.body
         content_type = _SERIALIZABLE_CONTENT_TYPE.get(r1_content_type)
-        if self._ignore_fields and content_type:
+        if content_type:
             handler = getattr(self, '_handle_content_type_{}'.format(content_type))
             if handler:
                 r1_content = handler(r1_content)
@@ -75,9 +77,9 @@ class ResponseMatcher(object):
         is_formatted = all([isinstance(c, dict) for c in (r1_content, r2_content)])
 
         if self._fuzzy_match and is_formatted:
-            fuzzy_matcher = FuzzyMatcher()
+            fuzzy_matcher = FuzzyMatcher(**self._fuzzy_match_options)
             fuzzy_matcher.set_items(r1_content, r2_content)
-            fuzzy_matcher.compare(r1_content, r2_content)
+            fuzzy_matcher.compare()
         else:
             assert r1_content == r2_content
 
