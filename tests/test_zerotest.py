@@ -81,3 +81,4 @@ class TestZerotest(unittest.TestCase):
         assert replay(" replay {} --ignore-all-headers".format(proxy.data_file)) != 0
         assert replay(" replay {} --ignore-all-headers --ignore-fields count".format(proxy.data_file)) == 0
         assert replay(" replay {} --ignore-headers date --ignore-fields count".format(proxy.data_file)) == 0
+        assert replay(" replay {} --ignore-headers date --fuzzy count".format(proxy.data_file)) == 0

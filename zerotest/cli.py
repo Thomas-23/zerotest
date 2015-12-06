@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+
 import argparse
 import logging
 import os
@@ -48,6 +49,11 @@ class CLI(object):
                             nargs='*')
         parser.add_argument('--ignore-all-headers', help="skip headers match", dest="ignore_all_headers",
                             action='store_true'),
+        parser.add_argument('--fuzzy-match',
+                            help="enable fuzzy match, check the schema of response data instead of fully match",
+                            action='store_true')
+        parser.add_argument('--allow-blank', help="allow blank fields, only work on fuzzy match", action='store_true')
+        parser.add_argument('--allow-none', help="allow none fields, only work on fuzzy match", action='store_true')
         parser.add_argument('--ignore-fields',
                             help="list of fields ignore in response matching,"
                                  " only work on serializable content-type,"
@@ -135,7 +141,14 @@ class CLI(object):
         from zerotest.generator.generator import Generator
         filepath = self._parse_result.file
         options = self.get_cli_options('endpoint', 'verify_ssl')
-        match_options = self.get_cli_options('ignore_headers', 'ignore_fields', 'ignore_all_headers')
+        match_options = self.get_cli_options(
+            'ignore_headers',
+            'ignore_fields',
+            'ignore_all_headers',
+            'fuzzy_match',
+            'allow_blank',
+            'allow_none',
+        )
         generator = Generator(filepath, options=options, match_options=match_options)
         return generator
 
