@@ -63,7 +63,14 @@ class ResponseMatcher(object):
         assert r1_content_type == r2_content_type
         r1_content = r1.body
         r2_content = r2.body
-        content_type = _SERIALIZABLE_CONTENT_TYPE.get(r1_content_type)
+        content_type = None
+        if r1_content_type:
+            values = r1_content_type.split(';')
+            for v in values:
+                content_type = _SERIALIZABLE_CONTENT_TYPE.get(v.lower())
+                # found content type
+                if content_type:
+                    break
         if content_type:
             handler = getattr(self, '_handle_content_type_{}'.format(content_type))
             if handler:

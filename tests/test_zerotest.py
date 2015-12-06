@@ -59,6 +59,11 @@ class TestZerotest(unittest.TestCase):
         res.raise_for_status()
         assert res.text == 'who am I?'
 
+        res = requests.post(urljoin(proxy.url, 'echo'), data=json.dumps({"say": "hello", "name": "tester"}),
+                            headers={"Content-Type": "application/json; charset=utf-8"})
+        res.raise_for_status()
+        assert res.json() == {"say": "hello", "name": "tester"}
+
         res = requests.get(urljoin(proxy.url, 'count'))
         res.raise_for_status()
         assert isinstance(res.json()['count'], int)

@@ -7,11 +7,9 @@ Mocked API server
 import threading
 import time
 import json
-
 import requests
 from werkzeug.serving import run_simple
 from werkzeug.wrappers import Request, Response
-
 from tests.mock import pickup_port
 from zerotest.utils.generator_helper import get_name_from_request
 from zerotest.utils.url_helper import urljoin
@@ -34,7 +32,7 @@ class Server(object):
 
     def get_count(self, request):
         return Response(json.dumps(dict(count=self.count)),
-                        content_type='application/json')
+                        content_type='application/json; charset=utf-8')
 
     def post_echo(self, request):
         return Response(request.data,
@@ -47,7 +45,7 @@ class Server(object):
 
     def get_chinese_hello_world(self, request):
         return Response(json.dumps(dict(count=self.count, content="你好,世界")),
-                        content_type='application/json')
+                        content_type='application/json; charset=utf-8')
 
     def delete_shutdown_server(self, request):
         func = request.environ.get('werkzeug.server.shutdown')
