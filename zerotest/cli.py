@@ -53,7 +53,7 @@ class CLI(object):
                             help="enable fuzzy match, check the schema of response data instead of fully match",
                             action='store_true')
         parser.add_argument('--allow-blank', help="allow blank fields, only work on fuzzy match", action='store_true')
-        parser.add_argument('--allow-none', help="allow none fields, only work on fuzzy match", action='store_true')
+        parser.add_argument('--allow-none', help="allow none(null) fields, only work on fuzzy match", action='store_true')
         parser.add_argument('--ignore-fields',
                             help="list of fields ignore in response matching,"
                                  " only work on serializable content-type,"
