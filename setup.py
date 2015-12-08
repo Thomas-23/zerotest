@@ -42,7 +42,7 @@ class TestCommand(Command):
 
 
 setup(name='zerotest',
-      version='1.2.0',
+      version='1.2.1',
       long_description=long_description,
       description=description,
       author='Hari Jiang',
