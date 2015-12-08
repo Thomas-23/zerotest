@@ -86,7 +86,12 @@ class ResponseMatcher(object):
         if self._fuzzy_match and is_formatted:
             fuzzy_matcher = FuzzyMatcher(**self._fuzzy_match_options)
             fuzzy_matcher.set_items(r1_content, r2_content)
-            fuzzy_matcher.compare()
+            try:
+                fuzzy_matcher.compare()
+            except AssertionError:
+                print('expect : {}'.format(r1_content))
+                print('actual : {}'.format(r2_content))
+                raise
         else:
             assert r1_content == r2_content
 
