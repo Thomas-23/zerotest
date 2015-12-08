@@ -1,6 +1,8 @@
 from __future__ import unicode_literals
+from __future__ import print_function
 
 import logging
+import sys
 
 from zerotest.fuzzy_matcher import FuzzyMatcher
 
@@ -89,8 +91,8 @@ class ResponseMatcher(object):
             try:
                 fuzzy_matcher.compare()
             except AssertionError:
-                print('expect : {}'.format(r1_content))
-                print('actual : {}'.format(r2_content))
+                print('expect : {}'.format(r1_content), file=sys.stderr)
+                print('actual : {}'.format(r2_content), file=sys.stderr)
                 raise
         else:
             assert r1_content == r2_content
