@@ -68,3 +68,17 @@ Export debug flag `ZEROTEST_DEBUG=true` to see verbose logs during program or te
 * Open issue if found bugs or some cool ideas
 * Feel free to ask if have any questions
 * Testing is very important for a test tool, commit your test file together with pull request
+
+|| *名称*       ||     *说明*
+|| scheme      ||   指定低层使用的协议(例如：http, https, ftp)
+|| host        ||   HTTP服务器的IP地址或者域名
+|| port#       ||   HTTP服务器的默认端口是80，这种情况下端口号可以省略。如果使用了别的端口，必须指明，例如 http://www.cnblogs.com:8080/
+|| path        ||          访问资源的路径
+|| url-params  ||
+|| query-string ||      发送给http服务器的数据
+|| anchor-     ||       锚,用于网页定位
+
+|head1 head1 head1|head2 head2 head2|head3 head3 head3|head4 head4 head4|
+|---|:---|:---:|---:|
+|row1text1|row1text3|row1text3|row1text4|
+|row2text1|row2text3|row2text3|row2text4|
